@@ -6,15 +6,20 @@ const items = [
     {
         id: 1,
         icon: "🚚",
-        text: "Fast Delivery across Qatar",
+        text: "Fast Delivery Across Qatar",
     },
     {
         id: 2,
+        icon: "⚡",
+        text: "Same Day Delivery Available",
+    },
+    {
+        id: 3,
         icon: "💵",
         text: "Cash on Delivery Available",
     },
     {
-        id: 3,
+        id: 4,
         icon: "✨",
         text: "Quality Products • Affordable Prices",
     },

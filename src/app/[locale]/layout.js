@@ -3,6 +3,8 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
+import { CartProvider } from "@/context/CartContext";
+import { CustomerProvider } from "@/context/CustomerContext";
 import "../globals.css";
 
 const geistSans = Geist({
@@ -48,20 +50,14 @@ export default async function RootLayout({ children, params }) {
     const isArabic = locale === "ar";
 
     return (
-        <html
-            lang={locale}
-            dir={isArabic ? "rtl" : "ltr"}
-            className={`${geistSans.variable} ${geistMono.variable} ${notoSansArabic.variable} h-full antialiased`}
-        >
-            <body
-                className={`min-h-screen bg-white text-[#24191E] ${
-                    isArabic
-                        ? "font-[family-name:var(--font-arabic)]"
-                        : "font-[family-name:var(--font-geist-sans)]"
-                }`}
-            >
+        <html lang={locale} dir={isArabic ? "rtl" : "ltr"} className={`${geistSans.variable} ${geistMono.variable} ${notoSansArabic.variable} h-full antialiased`}>
+            <body className={`min-h-screen bg-white text-[#24191E] ${isArabic ? "font-[family-name:var(--font-arabic)]" : "font-[family-name:var(--font-geist-sans)]"}`}>
                 <NextIntlClientProvider messages={messages}>
-                    {children}
+                    <CustomerProvider>
+                        <CartProvider>
+                            {children}
+                        </CartProvider>
+                    </CustomerProvider>
                 </NextIntlClientProvider>
             </body>
         </html>

@@ -17,9 +17,9 @@ const Categories = () => {
     const categories = [
         {
             id: 1,
-            title: t("items.homeAppliances"),
+            title: t("items.homeAccessories"),
             image: "https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?auto=format&fit=crop&w=1200&q=85",
-            href: "/collections/home-appliances",
+            href: "/collections/home-accessories",
             icon: House,
         },
         {

@@ -22,8 +22,8 @@ const Footer = () => {
         },
         {
             id: 2,
-            title: t("shop.homeAppliances"),
-            href: "/collections/home-appliances",
+            title: t("shop.homeAccessories"),
+            href: "/collections/home-accessories",
         },
         {
             id: 3,
@@ -80,12 +80,12 @@ const Footer = () => {
 
     return (
         <footer dir={locale === "ar" ? "rtl" : "ltr"} className="relative w-full overflow-hidden bg-[#260B19]">
-            <div className="pointer-events-none absolute -start-32 -top-32 h-80 w-80 rounded-full bg-[#731D46]/30 blur-3xl" />
-            <div className="pointer-events-none absolute -bottom-40 -end-32 h-96 w-96 rounded-full bg-[#D4A037]/10 blur-3xl" />
+            <div className="pointer-events-none absolute -start-24 -top-24 hidden h-64 w-64 rounded-full bg-[#731D46]/20 blur-2xl lg:block" />
+            <div className="pointer-events-none absolute -bottom-24 -end-24 hidden h-72 w-72 rounded-full bg-[#D4A037]/10 blur-2xl lg:block" />
             <div className="relative border-b border-white/10">
                 <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-5 px-4 py-7 sm:px-6 sm:py-8 md:px-8 lg:flex-row lg:items-center lg:justify-between lg:px-10 xl:px-12">
                     <div className="flex items-center gap-4">
-                        <button type="button" onClick={() => navigateTo("/")} className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white p-2 shadow-[0_10px_30px_rgba(0,0,0,0.2)]">
+                        <button type="button" onClick={() => navigateTo("/")} className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white p-2 shadow-lg">
                             <Image src="/logo.png" alt="Ziwora" width={56} height={56} className="h-full w-full object-contain" />
                         </button>
                         <div>
@@ -93,14 +93,14 @@ const Footer = () => {
                             <p className="mt-1 max-w-xl text-xs leading-5 text-[#C8B5BD] sm:text-sm">{t("description")}</p>
                         </div>
                     </div>
-                    <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                         {features.map((item) => {
                             const Icon = item.icon;
 
                             return (
-                                <div key={item.id} className="flex min-h-16 flex-col items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04] px-2 py-3 text-center backdrop-blur-sm sm:min-w-[130px] sm:flex-row sm:gap-2 sm:px-3 sm:text-start">
+                                <div key={item.id} className="flex min-h-14 items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-start sm:min-h-16 sm:min-w-[130px]">
                                     <Icon size={18} className="shrink-0 text-[#D4A037]" />
-                                    <span className="mt-1 text-[9px] font-bold leading-tight text-[#E2D5DA] sm:mt-0 sm:text-xs">{item.title}</span>
+                                    <span className="text-[10px] font-bold leading-tight text-[#E2D5DA] sm:text-xs">{item.title}</span>
                                 </div>
                             );
                         })}
@@ -115,7 +115,7 @@ const Footer = () => {
                         {shopLinks.map((item) => (
                             <button key={item.id} type="button" onClick={() => navigateTo(item.href)} className="group flex w-fit items-center gap-1.5 text-start text-xs leading-5 text-[#C8B5BD] transition duration-300 hover:text-white sm:text-sm">
                                 <span>{item.title}</span>
-                                <ArrowUpRight size={13} className={`opacity-0 transition duration-300 group-hover:opacity-100 ${locale === "ar" ? "rotate-[-90deg] group-hover:-translate-x-0.5" : "group-hover:translate-x-0.5 group-hover:-translate-y-0.5"}`} />
+                                <ArrowUpRight size={13} className={`opacity-0 transition duration-300 md:group-hover:opacity-100 ${locale === "ar" ? "rotate-[-90deg] md:group-hover:-translate-x-0.5" : "md:group-hover:translate-x-0.5 md:group-hover:-translate-y-0.5"}`} />
                             </button>
                         ))}
                     </div>
@@ -127,7 +127,7 @@ const Footer = () => {
                         {supportLinks.map((item) => (
                             <button key={item.id} type="button" onClick={() => navigateTo(item.href)} className="group flex w-fit items-center gap-1.5 text-start text-xs leading-5 text-[#C8B5BD] transition duration-300 hover:text-white sm:text-sm">
                                 <span>{item.title}</span>
-                                <ArrowUpRight size={13} className={`opacity-0 transition duration-300 group-hover:opacity-100 ${locale === "ar" ? "rotate-[-90deg] group-hover:-translate-x-0.5" : "group-hover:translate-x-0.5 group-hover:-translate-y-0.5"}`} />
+                                <ArrowUpRight size={13} className={`opacity-0 transition duration-300 md:group-hover:opacity-100 ${locale === "ar" ? "rotate-[-90deg] md:group-hover:-translate-x-0.5" : "md:group-hover:translate-x-0.5 md:group-hover:-translate-y-0.5"}`} />
                             </button>
                         ))}
                     </div>
@@ -136,20 +136,20 @@ const Footer = () => {
                     <h3 className="text-base font-extrabold text-white sm:text-lg">{t("contact.title")}</h3>
                     <span className="mt-2 block h-0.5 w-8 rounded-full bg-[#D4A037]" />
                     <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3 lg:grid-cols-1">
-                        <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-3 py-3 text-[#C8B5BD]">
+                        <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-[#C8B5BD]">
                             <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#D4A037]/10 text-[#D4A037]">
                                 <MapPin size={17} />
                             </span>
                             <span className="text-xs sm:text-sm">{t("contact.location")}</span>
                         </div>
-                        <a href="https://wa.me/97400000000" target="_blank" rel="noopener noreferrer" className="group flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-3 py-3 text-[#C8B5BD] transition duration-300 hover:border-[#25D366]/40 hover:bg-[#25D366]/10 hover:text-white">
-                            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#25D366]/10 text-[#25D366] transition duration-300 group-hover:bg-[#25D366] group-hover:text-white">
+                        <a href="https://wa.me/97400000000" target="_blank" rel="noopener noreferrer" className="group flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-[#C8B5BD] transition duration-300 md:hover:border-[#25D366]/40 md:hover:bg-[#25D366]/10 md:hover:text-white">
+                            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#25D366]/10 text-[#25D366] transition duration-300 md:group-hover:bg-[#25D366] md:group-hover:text-white">
                                 <MessageCircleMore size={17} />
                             </span>
                             <span className="text-xs sm:text-sm">{t("contact.whatsapp")}</span>
                         </a>
-                        <a href="mailto:hello@ziwora.com" className="group flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-3 py-3 text-[#C8B5BD] transition duration-300 hover:border-[#D4A037]/40 hover:bg-[#D4A037]/10 hover:text-white">
-                            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#D4A037]/10 text-[#D4A037] transition duration-300 group-hover:bg-[#D4A037] group-hover:text-white">
+                        <a href="mailto:hello@ziwora.com" className="group flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-[#C8B5BD] transition duration-300 md:hover:border-[#D4A037]/40 md:hover:bg-[#D4A037]/10 md:hover:text-white">
+                            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#D4A037]/10 text-[#D4A037] transition duration-300 md:group-hover:bg-[#D4A037] md:group-hover:text-white">
                                 <Mail size={17} />
                             </span>
                             <span dir="ltr" className="min-w-0 truncate text-xs sm:text-sm">hello@ziwora.com</span>
@@ -162,15 +162,15 @@ const Footer = () => {
                     <p className="text-[11px] text-[#A9929C] sm:text-xs">{t("copyright")}</p>
                     <p className="text-[11px] text-[#A9929C] sm:text-xs">
                         {t("poweredBy")}{" "}
-                        <a href="https://softrisehub.com" target="_blank" rel="noopener noreferrer" className="font-bold text-white transition duration-300 hover:text-[#D4A037] hover:underline">
+                        <a href="https://softrisehub.com" target="_blank" rel="noopener noreferrer" className="font-bold text-white transition duration-300 md:hover:text-[#D4A037] md:hover:underline">
                             SoftRiseHub
                         </a>
                     </p>
                 </div>
             </div>
-            <a href="https://wa.me/97400000000" target="_blank" rel="noopener noreferrer" aria-label={t("contact.whatsapp")} className={`fixed bottom-4 z-50 flex h-12 w-12 items-center justify-center rounded-full border-2 border-white/70 bg-[#25D366] text-white shadow-[0_12px_32px_rgba(37,211,102,0.45)] transition duration-300 hover:-translate-y-1 hover:scale-105 hover:bg-[#20BD5A] sm:bottom-6 sm:h-14 sm:w-14 ${locale === "ar" ? "left-4 sm:left-6" : "right-4 sm:right-6"}`}>
+            <a href="https://wa.me/97400000000" target="_blank" rel="noopener noreferrer" aria-label={t("contact.whatsapp")} className={`fixed bottom-4 z-50 flex h-12 w-12 items-center justify-center rounded-full border-2 border-white/70 bg-[#25D366] text-white shadow-xl transition duration-300 md:hover:-translate-y-1 md:hover:scale-105 md:hover:bg-[#20BD5A] sm:bottom-6 sm:h-14 sm:w-14 ${locale === "ar" ? "left-4 sm:left-6" : "right-4 sm:right-6"}`}>
                 <MessageCircleMore size={24} className="sm:h-7 sm:w-7" />
-                <span className="absolute inset-0 -z-10 animate-ping rounded-full bg-[#25D366]/35" />
+                <span className="absolute inset-0 -z-10 rounded-full bg-[#25D366]/20" />
             </a>
         </footer>
     );

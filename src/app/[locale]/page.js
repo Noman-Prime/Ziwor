@@ -1,4 +1,3 @@
-"use client"
 import TopBar from "@/components/topbar";
 import Navbar from "@/components/navbar";
 import Hero from "@/components/hero";
@@ -7,13 +6,16 @@ import Features from "@/components/features";
 import BestSellers from "@/components/bestseller";
 import WhatsAppBanner from "@/components/whatsappcontact";
 import Footer from "@/components/footer";
+import { getHeroSliders } from "@/lib/hero-slider";
 
-const Home = () => {
+const Home = async () => {
+  const sliders = await getHeroSliders();
+
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#FCF8F6]">
       <TopBar />
       <Navbar />
-      <Hero />
+      <Hero slides={sliders} />
       <Categories />
       <Features />
       <BestSellers />
