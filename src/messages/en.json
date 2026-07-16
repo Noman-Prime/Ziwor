@@ -1,0 +1,245 @@
+{
+  "TopBar": {
+    "fastDelivery": "Fast Delivery across Qatar",
+    "cashOnDelivery": "Cash on Delivery Available",
+    "qualityProducts": "Quality Products • Affordable Prices"
+  },
+  "Navbar": {
+    "homeAppliances": "Home Appliances",
+    "crockery": "Crockery",
+    "electronics": "Electronics",
+    "healthBeauty": "Health & Beauty",
+    "language": "Language",
+    "english": "English",
+    "arabic": "Arabic",
+    "search": "Search",
+    "cart": "Shopping cart",
+    "account": "Customer account",
+    "openMenu": "Open navigation menu",
+    "closeMenu": "Close navigation menu"
+  },
+  "Hero": {
+    "badge": "Qatar's Everyday Essentials Store",
+    "titleLine1": "Premium Living",
+    "titleLine2": "Starts at Home",
+    "description": "Discover premium appliances, kitchenware, electronics and everyday essentials with fast delivery across Qatar.",
+    "shopNow": "Shop Now",
+    "exploreCategories": "Explore Categories",
+    "previousSlide": "Previous slide",
+    "nextSlide": "Next slide",
+    "goToSlide": "Go to slide",
+    "slides": {
+      "homeEssentials": {
+        "alt": "Home essentials products",
+        "title": "Everyday essentials for your home"
+      },
+      "kitchenEssentials": {
+        "alt": "Kitchen and crockery products",
+        "title": "Upgrade your kitchen essentials"
+      },
+      "electronics": {
+        "alt": "Electronic devices and accessories",
+        "title": "Smart electronics for everyday life"
+      }
+    }
+  },
+  "Categories": {
+    "badge": "Browse Collections",
+    "title": "Shop by Category",
+    "description": "Explore everyday essentials across four trusted categories.",
+    "items": {
+      "homeAppliances": "Home Appliances",
+      "crockery": "Crockery",
+      "electronics": "Electronics",
+      "healthBeauty": "Health & Beauty"
+    }
+  },
+  "Features": {
+    "goToFeature": "Go to feature",
+    "items": {
+      "qualityProducts": {
+        "title": "Quality Products",
+        "subtitle": "Checked before dispatch"
+      },
+      "affordablePrices": {
+        "title": "Affordable Prices",
+        "subtitle": "Best value in Qatar"
+      },
+      "fastDelivery": {
+        "title": "Fast Delivery",
+        "subtitle": "Across all of Qatar"
+      },
+      "cashOnDelivery": {
+        "title": "Cash on Delivery",
+        "subtitle": "Pay when it arrives"
+      }
+    }
+  },
+  "BestSellers": {
+    "badge": "Popular Products",
+    "title": "Best Sales",
+    "description": "Discover the products our customers love most.",
+    "viewAll": "View all",
+    "addToCart": "Add to Cart",
+    "currency": "QR",
+    "badges": {
+      "sale": "SALE",
+      "new": "NEW"
+    },
+    "products": {
+      "airFryer": {
+        "category": "Home Appliances",
+        "title": "Stainless Steel Air Fryer 5L"
+      },
+      "dinnerSet": {
+        "category": "Crockery",
+        "title": "24-Piece Porcelain Dinner Set"
+      },
+      "earbuds": {
+        "category": "Electronics",
+        "title": "Wireless Noise-Cancelling Earbuds"
+      },
+      "serum": {
+        "category": "Health & Beauty",
+        "title": "Vitamin C Brightening Serum"
+      },
+      "blender": {
+        "category": "Home Appliances",
+        "title": "Compact Blender 1000W"
+      },
+      "teaSet": {
+        "category": "Crockery",
+        "title": "Glass Tea Cup Set (6pcs)"
+      },
+      "deskLamp": {
+        "category": "Electronics",
+        "title": "Smart LED Desk Lamp"
+      },
+      "hairStraightener": {
+        "category": "Health & Beauty",
+        "title": "Rechargeable Hair Straightener"
+      }
+    }
+  },
+  "WhatsAppBanner": {
+    "badge": "Instant Support",
+    "title": "Order Directly on WhatsApp",
+    "description": "Skip the checkout process. Send us your shopping list on WhatsApp and our team will confirm your order within minutes.",
+    "button": "Chat on WhatsApp"
+  },
+  "Footer": {
+    "description": "Quality products, affordable prices and fast delivery across Qatar.",
+    "features": {
+      "quality": "Quality Products",
+      "delivery": "Fast Delivery",
+      "prices": "Best Prices"
+    },
+    "shop": {
+      "title": "Shop",
+      "home": "Home",
+      "homeAppliances": "Home Appliances",
+      "crockery": "Crockery",
+      "electronics": "Electronics",
+      "healthBeauty": "Health & Beauty"
+    },
+    "support": {
+      "title": "Support",
+      "trackOrder": "Track Order",
+      "returnsRefunds": "Returns & Refunds",
+      "contactUs": "Contact Us"
+    },
+    "contact": {
+      "title": "Get in Touch",
+      "location": "Doha, Qatar",
+      "whatsapp": "WhatsApp Support"
+    },
+    "copyright": "© 2026 Ziwora. All rights reserved.",
+    "poweredBy": "Powered by"
+  },
+  "Common": {
+    "loading": "Loading...",
+    "error": "Something went wrong.",
+    "retry": "Try Again",
+    "close": "Close",
+    "previous": "Previous",
+    "next": "Next",
+    "quantity": "Quantity",
+    "outOfStock": "Out of Stock",
+    "inStock": "In Stock"
+  },
+  "CollectionPage": {
+    "collectionBadge": "Shop Collection",
+    "productsCount": "products",
+    "currency": "QR",
+    "addToCart": "Add to Cart",
+    "unavailable": "Unavailable",
+    "soldOut": "Sold Out",
+    "badges": {
+      "sale": "SALE",
+      "new": "NEW"
+    },
+    "breadcrumb": {
+      "home": "Home"
+    },
+    "sort": {
+      "featured": "Featured",
+      "priceLow": "Price: Low to High",
+      "priceHigh": "Price: High to Low",
+      "name": "Name: A to Z"
+    },
+    "filters": {
+      "button": "Filters",
+      "title": "Filter Products",
+      "availability": "Availability",
+      "all": "All Products",
+      "available": "In Stock",
+      "unavailable": "Out of Stock",
+      "apply": "Apply Filters"
+    },
+    "collections": {
+      "homeAppliances": {
+        "title": "Home Appliances",
+        "description": "Discover reliable appliances designed to make everyday living easier, faster and more comfortable."
+      },
+      "crockery": {
+        "title": "Crockery",
+        "description": "Explore elegant dinnerware, glassware and kitchen essentials for every dining occasion."
+      },
+      "electronics": {
+        "title": "Electronics",
+        "description": "Shop smart electronics and practical accessories built for your modern lifestyle."
+      },
+      "healthBeauty": {
+        "title": "Health & Beauty",
+        "description": "Discover personal care, beauty and wellness products selected for your everyday routine."
+      }
+    },
+    "products": {
+      "airFryer": "Stainless Steel Air Fryer 5L",
+      "blender": "Compact Blender 1000W",
+      "coffeeMachine": "Automatic Coffee Machine",
+      "toaster": "Modern Two-Slice Toaster",
+      "dinnerSet": "24-Piece Porcelain Dinner Set",
+      "teaSet": "Glass Tea Cup Set",
+      "bowlSet": "Premium Ceramic Bowl Set",
+      "cutlerySet": "Stainless Steel Cutlery Set",
+      "earbuds": "Wireless Noise-Cancelling Earbuds",
+      "smartWatch": "Smart Fitness Watch",
+      "deskLamp": "Smart LED Desk Lamp",
+      "speaker": "Portable Wireless Speaker",
+      "serum": "Vitamin C Brightening Serum",
+      "hairStraightener": "Rechargeable Hair Straightener",
+      "skinCareSet": "Daily Skin Care Essentials Set",
+      "makeupSet": "Professional Makeup Collection"
+    },
+    "empty": {
+      "title": "No products found",
+      "description": "Try changing the selected filters."
+    },
+    "notFound": {
+      "title": "Collection not found",
+      "description": "The collection you are looking for does not exist.",
+      "button": "Return Home"
+    }
+  }
+}
