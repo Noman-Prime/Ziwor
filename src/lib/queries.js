@@ -105,6 +105,8 @@ export const GET_CART = `
             id
             checkoutUrl
             totalQuantity
+            createdAt
+            updatedAt
             cost {
                 subtotalAmount {
                     amount
@@ -131,6 +133,10 @@ export const GET_CART = `
                                 id
                                 title
                                 availableForSale
+                                image {
+                                    url
+                                    altText
+                                }
                                 price {
                                     amount
                                     currencyCode
