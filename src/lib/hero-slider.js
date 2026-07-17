@@ -1,10 +1,15 @@
 import { shopifyFetch } from "@/lib/shopify";
 import { HERO_SLIDER_QUERY } from "@/lib/queries";
 
-export const getHeroSliders = async () => {
+export const getHeroSliders = async (locale = "en") => {
     try {
+        const language = locale.toLowerCase().startsWith("ar") ? "AR" : "EN";
+
         const data = await shopifyFetch({
             query: HERO_SLIDER_QUERY,
+            variables: {
+                language,
+            },
             cache: "no-store",
         });
 
@@ -16,15 +21,11 @@ export const getHeroSliders = async () => {
                 handle: entry.handle,
                 title: entry.title?.value || "",
                 subtitle: entry.subtitle?.value || "",
-                desktopImage:
-                    entry.desktopImage?.reference?.image || null,
-                mobileImage:
-                    entry.mobileImage?.reference?.image || null,
+                desktopImage: entry.desktopImage?.reference?.image || null,
+                mobileImage: entry.mobileImage?.reference?.image || null,
                 buttonText: entry.buttonText?.value || "",
                 buttonLink: entry.buttonLink?.value || "",
-                displayOrder: Number(
-                    entry.displayOrder?.value || 0
-                ),
+                displayOrder: Number(entry.displayOrder?.value || 0),
             }))
             .filter((entry) => entry.desktopImage?.url)
             .sort(
@@ -32,11 +33,7 @@ export const getHeroSliders = async () => {
                     first.displayOrder - second.displayOrder
             );
     } catch (error) {
-        console.error(
-            "Failed to fetch hero sliders:",
-            error.message
-        );
-
+        console.error("Failed to fetch hero sliders:", error.message);
         return [];
     }
 };

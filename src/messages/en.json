@@ -1,63 +1,43 @@
 {
   "TopBar": {
-    "fastDelivery": "Fast Delivery across Qatar",
+    "fastDelivery": "Fast Delivery Across Qatar",
+    "sameDayDelivery": "Same-Day Delivery Available",
     "cashOnDelivery": "Cash on Delivery Available",
     "qualityProducts": "Quality Products • Affordable Prices"
   },
   "Navbar": {
+    "home": "Home",
+    "exploreCategories": "Explore Categories",
     "homeAccessories": "Home Accessories",
     "crockery": "Crockery",
     "electronics": "Electronics",
     "healthBeauty": "Health & Beauty",
-    "language": "Language",
-    "english": "English",
-    "arabic": "Arabic",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
     "search": "Search",
-    "cart": "Shopping cart",
-    "account": "Customer account",
-    "openMenu": "Open navigation menu",
-    "closeMenu": "Close navigation menu",
+    "searchPlaceholder": "Search for products...",
+    "cart": "Cart",
+    "account": "Account",
+    "accountTitle": "Your Account",
+    "accountDescription": "Sign in or create an account",
     "login": "Login",
-    "signup": "Create Account",
-    "signupShort": "Sign Up",
-    "accountTitle": "Customer Account",
-    "accountDescription": "Sign in or create an account to manage your orders."
+    "signup": "Sign Up",
+    "language": "Language"
   },
   "Hero": {
     "badge": "Qatar's Everyday Essentials Store",
-    "titleLine1": "Premium Living",
-    "titleLine2": "Starts at Home",
-    "description": "Discover premium appliances, kitchenware, electronics and everyday essentials with fast delivery across Qatar.",
-    "shopNow": "Shop Now",
     "exploreCategories": "Explore Categories",
     "previousSlide": "Previous slide",
     "nextSlide": "Next slide",
     "goToSlide": "Go to slide",
-    "slides": {
-      "homeEssentials": {
-        "alt": "Home essentials products",
-        "title": "Everyday essentials for your home"
-      },
-      "kitchenEssentials": {
-        "alt": "Kitchen and crockery products",
-        "title": "Upgrade your kitchen essentials"
-      },
-      "electronics": {
-        "alt": "Electronic devices and accessories",
-        "title": "Smart electronics for everyday life"
-      }
-    }
+    "noSlides": "No active slider images found."
   },
   "Categories": {
     "badge": "Browse Collections",
     "title": "Shop by Category",
-    "description": "Explore everyday essentials across four trusted categories.",
-    "items": {
-      "homeAccessories": "Home Accessories",
-      "crockery": "Crockery",
-      "electronics": "Electronics",
-      "healthBeauty": "Health & Beauty"
-    }
+    "description": "Explore everyday essentials across our trusted collections.",
+    "loading": "Loading collections...",
+    "empty": "No collections are currently available."
   },
   "Features": {
     "goToFeature": "Go to feature",
@@ -82,10 +62,10 @@
   },
   "BestSellers": {
     "badge": "Popular Products",
-    "title": "Best Sales",
-    "description": "Discover the products our customers love most.",
-    "viewAll": "View all",
-    "addToCart": "Add to Cart",
+    "title": "Best Sellers",
+    "description": "Discover the products our customers love the most.",
+    "viewAll": "View All",
+    "viewProduct": "View Product",
     "currency": "QR",
     "badges": {
       "sale": "SALE",
@@ -114,7 +94,7 @@
       },
       "teaSet": {
         "category": "Crockery",
-        "title": "Glass Tea Cup Set (6pcs)"
+        "title": "Glass Tea Cup Set (6 pcs)"
       },
       "deskLamp": {
         "category": "Electronics",
@@ -140,7 +120,7 @@
       "prices": "Best Prices"
     },
     "shop": {
-      "title": "Shop",
+      "title": "Quick Links",
       "home": "Home",
       "homeAccessories": "Home Accessories",
       "crockery": "Crockery",
@@ -156,9 +136,11 @@
     "contact": {
       "title": "Get in Touch",
       "location": "Doha, Qatar",
-      "whatsapp": "WhatsApp Support"
+      "whatsapp": "WhatsApp",
+      "email": "Email",
+      "supportHours": "Support Hours"
     },
-    "copyright": "© 2026 Ziwora. All rights reserved.",
+    "copyright": "© 2026 {businessName}. All rights reserved.",
     "poweredBy": "Powered by"
   },
   "Common": {

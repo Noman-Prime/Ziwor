@@ -12,7 +12,8 @@ export const GET_SHOP = `
 `;
 
 export const GET_COLLECTIONS = `
-    query GetCollections {
+    query GetCollections($language: LanguageCode!)
+    @inContext(language: $language) {
         collections(first: 20) {
             edges {
                 node {
@@ -152,7 +153,8 @@ export const GET_CART = `
     }
 `;
 export const HERO_SLIDER_QUERY = `
-    query GetHeroSliders {
+    query GetHeroSliders($language: LanguageCode!)
+    @inContext(language: $language) {
         metaobjects(type: "hero_slider", first: 20) {
             nodes {
                 id
