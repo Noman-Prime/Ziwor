@@ -204,8 +204,25 @@ export const HERO_SLIDER_QUERY = `
                     value
                 }
 
-                buttonLink: field(key: "button_link") {
-                    value
+                product: field(key: "product") {
+                    reference {
+                        ... on Product {
+                            id
+                            title
+                            handle
+                            availableForSale
+
+                            featuredImage {
+                                url
+                                altText
+                            }
+
+                            selectedOrFirstAvailableVariant {
+                                id
+                                availableForSale
+                            }
+                        }
+                    }
                 }
 
                 displayOrder: field(key: "display_order") {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { useCustomer } from "@/context/CustomerContext";
@@ -14,7 +15,7 @@ import {
     LogIn,
     ShieldCheck,
     ShoppingBag,
-    UserPlus
+    UserPlus,
 } from "lucide-react";
 
 const LoginPage = () => {
@@ -26,7 +27,10 @@ const LoginPage = () => {
     const [redirecting, setRedirecting] = useState(false);
     const [authError, setAuthError] = useState("");
 
-    const isArabic = locale === "ar";
+    const isArabic = locale.toLowerCase().startsWith("ar");
+
+    const businessName =
+        process.env.NEXT_PUBLIC_BUSINESS_NAME || "Ziwor Global Trading";
 
     useEffect(() => {
         const searchParams = new URLSearchParams(window.location.search);
@@ -40,6 +44,7 @@ const LoginPage = () => {
     const handleLogin = () => {
         setRedirecting(true);
         setAuthError("");
+
         login(locale, `/${locale}`);
     };
 
@@ -89,7 +94,7 @@ const LoginPage = () => {
                             name:
                                 customer?.firstName ||
                                 customer?.displayName ||
-                                ""
+                                "",
                         })}
                     </h1>
 
@@ -148,15 +153,24 @@ const LoginPage = () => {
                         <span>{t("continueShopping")}</span>
                     </button>
 
-                    <div className="flex items-center gap-2">
-                        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#731D46] text-lg font-black text-white shadow-sm">
-                            Z
-                        </span>
+                    <button
+                        type="button"
+                        onClick={() => navigateTo("/")}
+                        aria-label={businessName}
+                        className="flex items-center gap-3"
+                    >
+                        <Image
+                            src="/ziwora.png"
+                            alt={businessName}
+                            width={150}
+                            height={55}
+                            priority
+                            sizes="(max-width: 640px) 110px, 150px"
+                            className="h-10 w-auto object-contain sm:h-12"
+                        />
 
-                        <span className="hidden text-lg font-black text-[#2B1D1D] sm:block">
-                            ZiworGloabalTrading
-                        </span>
-                    </div>
+                        <span className="sr-only">{businessName}</span>
+                    </button>
                 </header>
 
                 <div className="flex flex-1 items-center justify-center py-8 sm:py-10 lg:py-12">
@@ -258,6 +272,7 @@ const LoginPage = () => {
                                     className="mt-2 inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-3 text-sm font-extrabold text-[#731D46] transition hover:bg-[#F8EDF1] hover:text-[#D4A037]"
                                 >
                                     <UserPlus size={17} />
+
                                     <span>{t("signup.button")}</span>
                                 </button>
                             </div>
@@ -268,6 +283,7 @@ const LoginPage = () => {
                                 size={14}
                                 className="me-1 inline-block align-[-2px]"
                             />
+
                             {t("privacy")}
                         </p>
                     </div>

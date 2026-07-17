@@ -12,33 +12,42 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
 }
 
 body {
+  margin: 0;
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 html[dir="rtl"] body {
-  font-family: var(--font-arabic), Arial, sans-serif;
-  font-weight: 500;
+  font-family: var(--font-arabic), sans-serif;
   letter-spacing: 0;
 }
 
 html[dir="rtl"] button,
-html[dir="rtl"] a,
 html[dir="rtl"] input,
 html[dir="rtl"] textarea,
-html[dir="rtl"] select {
-  font-family: var(--font-arabic), Arial, sans-serif;
+html[dir="rtl"] select,
+html[dir="rtl"] a {
+  font-family: var(--font-arabic), sans-serif;
 }
 
-html[dir="rtl"] {
-  text-rendering: optimizeLegibility;
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
 }

@@ -77,30 +77,24 @@ const Navbar = () => {
     const menuItems = [
         {
             id: 1,
-            title: t("exploreCategories"),
-            href: "/collections",
-            icon: MdGridView,
-        },
-        {
-            id: 2,
             title: t("homeAccessories"),
             href: "/collections/home-accessories",
             icon: FaHome,
         },
         {
-            id: 3,
+            id: 2,
             title: t("crockery"),
             href: "/collections/crockery",
             icon: LuUtensilsCrossed,
         },
         {
-            id: 4,
+            id: 3,
             title: t("electronics"),
             href: "/collections/electronics",
             icon: MdOutlinePhoneAndroid,
         },
         {
-            id: 5,
+            id: 4,
             title: t("healthBeauty"),
             href: "/collections/health-beauty",
             icon: PiToiletPaperBold,
@@ -114,7 +108,7 @@ const Navbar = () => {
                         {menuOpen ? <MdClose /> : <MdMenu />}
                     </button>
                     <button type="button" onClick={() => navigateTo("/")} aria-label={t("home")} className="flex shrink-0 items-center">
-                        <Image src="/logo.png" alt="Ziwor" width={160} height={60} priority className="h-10 w-auto object-contain sm:h-11 lg:h-12" />
+                        <Image src="/ziwora.png" alt="Ziwor" width={220} height={80} priority sizes="(max-width:640px) 150px, 200px" className="h-11 w-auto object-contain sm:h-12 lg:h-14" />
                     </button>
                 </div>
                 <div className="hidden items-center gap-2 lg:flex xl:gap-3">

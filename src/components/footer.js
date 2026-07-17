@@ -17,13 +17,18 @@ const Footer = () => {
     const t = useTranslations("Footer");
     const locale = useLocale();
     const router = useRouter();
+    const isArabic = locale.toLowerCase().startsWith("ar");
 
     const businessName =
         process.env.NEXT_PUBLIC_BUSINESS_NAME || "Ziwor Global Trading";
+
     const supportEmail =
         process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "";
-    const whatsappNumber =
-        process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "";
+
+    const whatsappNumber = (
+        process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || ""
+    ).replace(/\D/g, "");
+
     const whatsappMessage =
         process.env.NEXT_PUBLIC_WHATSAPP_MESSAGE || "";
 
@@ -31,7 +36,7 @@ const Footer = () => {
         ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
             whatsappMessage
         )}`
-        : "#";
+        : "";
 
     const navigateTo = (href) => {
         router.push(href);
@@ -103,10 +108,11 @@ const Footer = () => {
 
     return (
         <footer
-            dir={locale === "ar" ? "rtl" : "ltr"}
+            dir={isArabic ? "rtl" : "ltr"}
             className="relative w-full overflow-hidden bg-[#260B19]"
         >
             <div className="pointer-events-none absolute -start-24 -top-24 hidden h-64 w-64 rounded-full bg-[#731D46]/20 blur-2xl lg:block" />
+
             <div className="pointer-events-none absolute -bottom-24 -end-24 hidden h-72 w-72 rounded-full bg-[#D4A037]/10 blur-2xl lg:block" />
 
             <div className="relative border-b border-white/10">
@@ -119,7 +125,7 @@ const Footer = () => {
                             className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white p-2 shadow-lg"
                         >
                             <Image
-                                src="/logo.png"
+                                src="/ziwora.png"
                                 alt={businessName}
                                 width={56}
                                 height={56}
@@ -185,7 +191,7 @@ const Footer = () => {
 
                                 <ArrowUpRight
                                     size={13}
-                                    className={`opacity-0 transition duration-300 md:group-hover:opacity-100 ${locale === "ar"
+                                    className={`opacity-0 transition duration-300 md:group-hover:opacity-100 ${isArabic
                                             ? "rotate-[-90deg] md:group-hover:-translate-x-0.5"
                                             : "md:group-hover:translate-x-0.5 md:group-hover:-translate-y-0.5"
                                         }`}
@@ -214,7 +220,7 @@ const Footer = () => {
 
                                 <ArrowUpRight
                                     size={13}
-                                    className={`opacity-0 transition duration-300 md:group-hover:opacity-100 ${locale === "ar"
+                                    className={`opacity-0 transition duration-300 md:group-hover:opacity-100 ${isArabic
                                             ? "rotate-[-90deg] md:group-hover:-translate-x-0.5"
                                             : "md:group-hover:translate-x-0.5 md:group-hover:-translate-y-0.5"
                                         }`}
@@ -295,7 +301,7 @@ const Footer = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={t("contact.whatsapp")}
-                    className={`fixed bottom-4 z-50 flex h-12 w-12 items-center justify-center rounded-full border-2 border-white/70 bg-[#25D366] text-white shadow-xl transition duration-300 md:hover:-translate-y-1 md:hover:scale-105 md:hover:bg-[#20BD5A] sm:bottom-6 sm:h-14 sm:w-14 ${locale === "ar"
+                    className={`fixed bottom-4 z-50 flex h-12 w-12 items-center justify-center rounded-full border-2 border-white/70 bg-[#25D366] text-white shadow-xl transition duration-300 md:hover:-translate-y-1 md:hover:scale-105 md:hover:bg-[#20BD5A] sm:bottom-6 sm:h-14 sm:w-14 ${isArabic
                             ? "left-4 sm:left-6"
                             : "right-4 sm:right-6"
                         }`}

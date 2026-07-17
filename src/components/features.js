@@ -8,6 +8,7 @@ const Features = () => {
     const t = useTranslations("Features");
     const locale = useLocale();
     const isArabic = locale === "ar";
+
     const [currentFeature, setCurrentFeature] = useState(0);
 
     const features = useMemo(
@@ -41,6 +42,8 @@ const Features = () => {
     );
 
     useEffect(() => {
+        if (!features.length) return;
+
         const featureInterval = setInterval(() => {
             setCurrentFeature((previousFeature) => (previousFeature + 1) % features.length);
         }, 3000);
@@ -49,7 +52,10 @@ const Features = () => {
     }, [features.length]);
 
     return (
-        <section dir={isArabic ? "rtl" : "ltr"} className="w-full overflow-hidden bg-[#731D46]">
+        <section
+            dir={isArabic ? "rtl" : "ltr"}
+            className="w-full overflow-hidden bg-[#731D46]"
+        >
             <div className="mx-auto w-full max-w-[1440px] px-4 py-5 sm:px-6 sm:py-6 md:px-8 lg:px-10 lg:py-7 xl:px-12">
                 <div className="hidden grid-cols-4 lg:grid">
                     {features.map((item, index) => {
@@ -69,6 +75,7 @@ const Features = () => {
                                     <h3 className="text-base font-extrabold leading-tight text-white xl:text-lg">
                                         {item.title}
                                     </h3>
+
                                     <p className="mt-1 text-xs leading-5 text-white/70 xl:text-sm">
                                         {item.subtitle}
                                     </p>
@@ -96,13 +103,18 @@ const Features = () => {
                                     className="flex w-full shrink-0 items-center justify-center gap-4 px-3"
                                 >
                                     <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/10 text-[#D6A23B] sm:h-14 sm:w-14">
-                                        <Icon size={27} strokeWidth={2.1} className="sm:h-8 sm:w-8" />
+                                        <Icon
+                                            size={27}
+                                            strokeWidth={2.1}
+                                            className="sm:h-8 sm:w-8"
+                                        />
                                     </span>
 
                                     <div className="min-w-0">
                                         <h3 className="text-base font-extrabold leading-tight text-white sm:text-lg">
                                             {item.title}
                                         </h3>
+
                                         <p className="mt-1 text-xs leading-5 text-white/70 sm:text-sm">
                                             {item.subtitle}
                                         </p>
@@ -112,14 +124,19 @@ const Features = () => {
                         })}
                     </div>
 
-                    <div dir="ltr" className="mt-4 flex items-center justify-center gap-2">
+                    <div
+                        dir="ltr"
+                        className="mt-4 flex items-center justify-center gap-2"
+                    >
                         {features.map((item, index) => (
                             <button
                                 key={item.id}
                                 type="button"
                                 onClick={() => setCurrentFeature(index)}
                                 aria-label={`${t("goToFeature")} ${index + 1}`}
-                                aria-current={currentFeature === index ? "true" : undefined}
+                                aria-current={
+                                    currentFeature === index ? "true" : undefined
+                                }
                                 className={`h-1.5 rounded-full transition-all duration-300 ${currentFeature === index
                                         ? "w-6 bg-[#D6A23B]"
                                         : "w-1.5 bg-white/40 hover:bg-white/70"

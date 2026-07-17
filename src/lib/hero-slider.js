@@ -24,7 +24,22 @@ export const getHeroSliders = async (locale = "en") => {
                 desktopImage: entry.desktopImage?.reference?.image || null,
                 mobileImage: entry.mobileImage?.reference?.image || null,
                 buttonText: entry.buttonText?.value || "",
-                buttonLink: entry.buttonLink?.value || "",
+
+                product: entry.product?.reference
+                    ? {
+                        id: entry.product.reference.id,
+                        title: entry.product.reference.title,
+                        handle: entry.product.reference.handle,
+                        availableForSale:
+                            entry.product.reference.availableForSale,
+                        featuredImage:
+                            entry.product.reference.featuredImage,
+                        variant:
+                            entry.product.reference
+                                .selectedOrFirstAvailableVariant,
+                    }
+                    : null,
+
                 displayOrder: Number(entry.displayOrder?.value || 0),
             }))
             .filter((entry) => entry.desktopImage?.url)

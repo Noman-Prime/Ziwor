@@ -7,15 +7,14 @@
   },
   "Navbar": {
     "home": "Home",
-    "exploreCategories": "Explore Categories",
     "homeAccessories": "Home Accessories",
     "crockery": "Crockery",
     "electronics": "Electronics",
     "healthBeauty": "Health & Beauty",
-    "openMenu": "Open menu",
-    "closeMenu": "Close menu",
+    "openMenu": "Open Menu",
+    "closeMenu": "Close Menu",
     "search": "Search",
-    "searchPlaceholder": "Search for products...",
+    "searchPlaceholder": "Search products...",
     "cart": "Cart",
     "account": "Account",
     "accountTitle": "Your Account",
@@ -27,90 +26,62 @@
   "Hero": {
     "badge": "Qatar's Everyday Essentials Store",
     "exploreCategories": "Explore Categories",
-    "previousSlide": "Previous slide",
-    "nextSlide": "Next slide",
-    "goToSlide": "Go to slide",
-    "noSlides": "No active slider images found."
+    "previousSlide": "Previous Slide",
+    "nextSlide": "Next Slide",
+    "goToSlide": "Go to Slide",
+    "noSlides": "No active banners available."
   },
   "Categories": {
-    "badge": "Browse Collections",
-    "title": "Shop by Category",
-    "description": "Explore everyday essentials across our trusted collections.",
-    "loading": "Loading collections...",
-    "empty": "No collections are currently available."
+    "badge": "Shop by Category",
+    "title": "Explore Our Categories",
+    "description": "Discover everyday essentials across our most popular collections.",
+    "loading": "Loading categories...",
+    "empty": "No categories are available right now."
   },
   "Features": {
     "goToFeature": "Go to feature",
     "items": {
       "qualityProducts": {
         "title": "Quality Products",
-        "subtitle": "Checked before dispatch"
+        "subtitle": "Carefully checked before dispatch"
       },
       "affordablePrices": {
         "title": "Affordable Prices",
-        "subtitle": "Best value in Qatar"
+        "subtitle": "Great value across Qatar"
       },
       "fastDelivery": {
         "title": "Fast Delivery",
-        "subtitle": "Across all of Qatar"
+        "subtitle": "Delivered across Qatar"
       },
       "cashOnDelivery": {
         "title": "Cash on Delivery",
-        "subtitle": "Pay when it arrives"
+        "subtitle": "Pay when your order arrives"
       }
     }
   },
   "BestSellers": {
-    "badge": "Popular Products",
-    "title": "Best Sellers",
-    "description": "Discover the products our customers love the most.",
+    "badge": "Best Sellers",
+    "title": "Our Best Selling Products",
+    "description": "Discover our most popular products, loved by customers across Qatar.",
     "viewAll": "View All",
     "viewProduct": "View Product",
-    "currency": "QR",
+    "loading": "Loading products...",
+    "empty": "No products available at the moment.",
+    "noImage": "No Image",
     "badges": {
-      "sale": "SALE",
-      "new": "NEW"
-    },
-    "products": {
-      "airFryer": {
-        "category": "Home Appliances",
-        "title": "Stainless Steel Air Fryer 5L"
-      },
-      "dinnerSet": {
-        "category": "Crockery",
-        "title": "24-Piece Porcelain Dinner Set"
-      },
-      "earbuds": {
-        "category": "Electronics",
-        "title": "Wireless Noise-Cancelling Earbuds"
-      },
-      "serum": {
-        "category": "Health & Beauty",
-        "title": "Vitamin C Brightening Serum"
-      },
-      "blender": {
-        "category": "Home Appliances",
-        "title": "Compact Blender 1000W"
-      },
-      "teaSet": {
-        "category": "Crockery",
-        "title": "Glass Tea Cup Set (6 pcs)"
-      },
-      "deskLamp": {
-        "category": "Electronics",
-        "title": "Smart LED Desk Lamp"
-      },
-      "hairStraightener": {
-        "category": "Health & Beauty",
-        "title": "Rechargeable Hair Straightener"
-      }
+      "new": "New",
+      "sale": "Sale",
+      "bestseller": "Best Seller",
+      "featured": "Featured"
     }
   },
   "WhatsAppBanner": {
-    "badge": "Instant Support",
-    "title": "Order Directly on WhatsApp",
-    "description": "Skip the checkout process. Send us your shopping list on WhatsApp and our team will confirm your order within minutes.",
-    "button": "Chat on WhatsApp"
+    "badge": "Need Help?",
+    "title": "Chat With Us on WhatsApp",
+    "description": "Have a question about a product or your order? Our team is ready to assist you.",
+    "button": "Chat on WhatsApp",
+    "ariaLabel": "Contact {businessName} on WhatsApp",
+    "defaultBusinessName": "our support team"
   },
   "Footer": {
     "description": "Quality products, affordable prices and fast delivery across Qatar.",
@@ -136,7 +107,7 @@
     "contact": {
       "title": "Get in Touch",
       "location": "Doha, Qatar",
-      "whatsapp": "WhatsApp",
+      "whatsapp": "Contact us on WhatsApp",
       "email": "Email",
       "supportHours": "Support Hours"
     },
@@ -145,7 +116,7 @@
   },
   "Common": {
     "loading": "Loading...",
-    "error": "Something went wrong.",
+    "error": "Something went wrong. Please try again.",
     "retry": "Try Again",
     "close": "Close",
     "previous": "Previous",
@@ -155,98 +126,60 @@
     "inStock": "In Stock"
   },
   "CollectionPage": {
-    "collectionBadge": "Shop Collection",
-    "addingToCart": "Adding...",
-    "cartSuccess": "{product} was added to your cart.",
-    "cartError": "We could not add this product to your cart.",
     "loading": {
       "title": "Loading Collection",
-      "description": "Please wait while we load the latest products."
+      "description": "Please wait while we load the products."
     },
     "errors": {
-      "load": "We could not load this collection. Please try again."
+      "load": "Unable to load this collection."
     },
-    "productsCount": "products",
-    "currency": "QR",
-    "addToCart": "Add to Cart",
-    "unavailable": "Unavailable",
-    "soldOut": "Sold Out",
-    "badges": {
-      "sale": "SALE",
-      "new": "NEW"
+    "notFound": {
+      "title": "Collection Not Found",
+      "description": "The collection you're looking for doesn't exist or is unavailable.",
+      "button": "Back to Home"
     },
     "breadcrumb": {
       "home": "Home"
     },
+    "collectionBadge": "Collection",
+    "productsCount": "Products",
     "sort": {
       "featured": "Featured",
       "priceLow": "Price: Low to High",
       "priceHigh": "Price: High to Low",
-      "name": "Name: A to Z"
+      "name": "Name (A–Z)"
     },
     "filters": {
       "button": "Filters",
-      "title": "Filter Products",
+      "title": "Filters",
       "availability": "Availability",
       "all": "All Products",
       "available": "In Stock",
       "unavailable": "Out of Stock",
       "apply": "Apply Filters"
     },
-    "collections": {
-      "homeAppliances": {
-        "title": "Home Appliances",
-        "description": "Discover reliable appliances designed to make everyday living easier, faster and more comfortable."
-      },
-      "crockery": {
-        "title": "Crockery",
-        "description": "Explore elegant dinnerware, glassware and kitchen essentials for every dining occasion."
-      },
-      "electronics": {
-        "title": "Electronics",
-        "description": "Shop smart electronics and practical accessories built for your modern lifestyle."
-      },
-      "healthBeauty": {
-        "title": "Health & Beauty",
-        "description": "Discover personal care, beauty and wellness products selected for your everyday routine."
-      }
+    "badges": {
+      "sale": "Sale"
     },
-    "products": {
-      "airFryer": "Stainless Steel Air Fryer 5L",
-      "blender": "Compact Blender 1000W",
-      "coffeeMachine": "Automatic Coffee Machine",
-      "toaster": "Modern Two-Slice Toaster",
-      "dinnerSet": "24-Piece Porcelain Dinner Set",
-      "teaSet": "Glass Tea Cup Set",
-      "bowlSet": "Premium Ceramic Bowl Set",
-      "cutlerySet": "Stainless Steel Cutlery Set",
-      "earbuds": "Wireless Noise-Cancelling Earbuds",
-      "smartWatch": "Smart Fitness Watch",
-      "deskLamp": "Smart LED Desk Lamp",
-      "speaker": "Portable Wireless Speaker",
-      "serum": "Vitamin C Brightening Serum",
-      "hairStraightener": "Rechargeable Hair Straightener",
-      "skinCareSet": "Daily Skin Care Essentials Set",
-      "makeupSet": "Professional Makeup Collection"
-    },
+    "soldOut": "Sold Out",
+    "unavailable": "Out of Stock",
+    "addToCart": "Add to Cart",
+    "addingToCart": "Adding...",
+    "cartSuccess": "\"{product}\" was added to your cart.",
+    "cartError": "Unable to add the product to your cart. Please try again.",
     "empty": {
-      "title": "No products found",
-      "description": "Try changing the selected filters."
-    },
-    "notFound": {
-      "title": "Collection not found",
-      "description": "The collection you are looking for does not exist.",
-      "button": "Return Home"
+      "title": "No Products Found",
+      "description": "No products match your current filters."
     }
   },
   "ContactPage": {
-    "badge": "Contact Ziwora",
+    "badge": "Contact Ziwor",
     "title": "We’re Here to Help",
-    "description": "Have a question about a product, delivery or your order? Send us a message and our team will respond as soon as possible.",
+    "description": "Have a question about a product, delivery, or your order? Send us a message and our team will respond as soon as possible.",
     "info": {
       "badge": "Get in Touch",
       "title": "Let’s Start a Conversation",
-      "description": "Choose the contact method that works best for you. Our support team is ready to help with products, orders and delivery questions."
+      "description": "Choose the contact method that works best for you. Our support team is ready to help with products, orders, and delivery questions."
     },
     "cards": {
       "location": {
@@ -259,11 +192,11 @@
       },
       "email": {
         "title": "Email",
-        "value": "hello@ziwora.com"
+        "value": "Email not available"
       },
       "hours": {
-        "title": "Working Hours",
-        "value": "Saturday - Thursday, 9 AM - 9 PM"
+        "title": "Support Hours",
+        "value": "Available Anytime"
       }
     },
     "whatsapp": {
@@ -293,190 +226,6 @@
       "description": "Thank you for contacting us. Our team will get back to you soon."
     }
   },
-  "TrackOrderPage": {
-    "badge": "Order Tracking",
-    "title": "Track Your Order",
-    "description": "Enter your order number and email address to view the latest delivery status and order details.",
-    "currency": "QR",
-    "continueShopping": "Continue Shopping",
-    "form": {
-      "badge": "Find Your Order",
-      "title": "Where Is My Order?",
-      "description": "Use the same email address provided when placing your order.",
-      "orderNumber": "Order Number",
-      "orderNumberPlaceholder": "Example: ZW-10248",
-      "email": "Email Address",
-      "emailPlaceholder": "Enter your email address",
-      "submit": "Track Order",
-      "searching": "Searching...",
-      "hint": "For the current demo, use order number ZW-10248."
-    },
-    "summary": {
-      "orderNumber": "Order Number",
-      "orderDate": "Order Date",
-      "delivery": "Estimated Delivery",
-      "status": "Current Status"
-    },
-    "statuses": {
-      "confirmed": "Order Confirmed",
-      "processing": "Processing",
-      "inTransit": "In Transit",
-      "outForDelivery": "Out for Delivery",
-      "delivered": "Delivered",
-      "cancelled": "Cancelled"
-    },
-    "tracking": {
-      "title": "Delivery Progress",
-      "description": "Follow your order from confirmation to delivery."
-    },
-    "timeline": {
-      "pending": "Pending",
-      "confirmed": {
-        "title": "Order Confirmed",
-        "description": "Your order was received and confirmed successfully."
-      },
-      "processing": {
-        "title": "Order Processing",
-        "description": "Your products were prepared and packed for delivery."
-      },
-      "shipped": {
-        "title": "Order Shipped",
-        "description": "Your package left our facility and is on its way."
-      },
-      "outForDelivery": {
-        "title": "Out for Delivery",
-        "description": "Your package will be delivered by our delivery team."
-      },
-      "delivered": {
-        "title": "Delivered",
-        "description": "Your order was delivered successfully."
-      }
-    },
-    "orderDetails": {
-      "title": "Order Details",
-      "quantity": "Quantity",
-      "total": "Total"
-    },
-    "deliveryDetails": {
-      "title": "Delivery Details",
-      "customer": "Customer",
-      "email": "Email",
-      "address": "Address"
-    },
-    "notFound": {
-      "title": "Order Not Found",
-      "description": "We could not find an order matching the information entered. Check the order number and email address and try again.",
-      "button": "Return to Store"
-    },
-    "demo": {
-      "items": {
-        "airFryer": "Stainless Steel Air Fryer 5L",
-        "earbuds": "Wireless Noise-Cancelling Earbuds"
-      }
-    }
-  },
-  "ReturnsRefundsPage": {
-    "badge": "Returns & Refunds",
-    "title": "Simple Returns, Clear Refunds",
-    "description": "Review our return and refund policy, eligibility requirements and the steps required to submit a return request.",
-    "policy": {
-      "badge": "Our Policy",
-      "title": "Return Policy Overview",
-      "description": "We want you to shop with confidence. Please review the conditions below before requesting a return.",
-      "returnWindow": {
-        "title": "Return Window",
-        "description": "Eligible products can be returned within 14 days of receiving your order."
-      },
-      "productCondition": {
-        "title": "Product Condition",
-        "description": "Items must be unused, complete and returned in their original packaging."
-      },
-      "proofOfPurchase": {
-        "title": "Proof of Purchase",
-        "description": "Your order number, invoice or valid purchase confirmation is required."
-      },
-      "refundMethod": {
-        "title": "Refund Method",
-        "description": "Approved refunds are returned through the original payment method where possible."
-      }
-    },
-    "steps": {
-      "badge": "Return Process",
-      "title": "How to Return an Item",
-      "description": "Follow these simple steps to submit your request and complete the return process.",
-      "contact": {
-        "title": "Contact Our Team",
-        "description": "Send your order number, product details and the reason for the return."
-      },
-      "review": {
-        "title": "Request Review",
-        "description": "Our support team reviews the request and confirms whether the item is eligible."
-      },
-      "return": {
-        "title": "Return the Product",
-        "description": "Prepare the item securely and follow the return instructions provided by our team."
-      },
-      "refund": {
-        "title": "Receive Your Refund",
-        "description": "Once inspected and approved, the refund will be processed according to the policy."
-      },
-      "note": {
-        "title": "Keep Your Packaging",
-        "description": "Keeping the original box, accessories and invoice helps us process your request faster."
-      }
-    },
-    "eligibility": {
-      "accepted": {
-        "badge": "Eligible",
-        "title": "Items We Can Accept",
-        "unused": "Products that are unused and remain in resalable condition.",
-        "packaging": "Products returned with the original packaging and accessories.",
-        "receipt": "Returns supported by an order number or proof of purchase.",
-        "damaged": "Products received damaged, defective or different from the order."
-      },
-      "excluded": {
-        "badge": "Not Eligible",
-        "title": "Items We Cannot Accept",
-        "used": "Products showing signs of use, damage or incorrect handling.",
-        "personalCare": "Opened personal care, hygiene or beauty products.",
-        "clearance": "Final-sale or clearance products marked as non-returnable.",
-        "missingParts": "Products returned without accessories, parts or original packaging."
-      }
-    },
-    "faq": {
-      "badge": "Common Questions",
-      "title": "Returns & Refunds FAQ",
-      "description": "Find answers to common questions about returns, refunds and exchanges.",
-      "items": {
-        "time": {
-          "question": "How long does a refund take?",
-          "answer": "After the returned product is received and approved, refunds are generally processed within 5 to 10 business days. Bank processing times may vary."
-        },
-        "delivery": {
-          "question": "Can I return a product after 14 days?",
-          "answer": "Returns submitted after the return window may not be accepted unless the product is covered by a valid warranty or arrived defective."
-        },
-        "exchange": {
-          "question": "Can I exchange an item instead of receiving a refund?",
-          "answer": "Exchanges may be available depending on product availability. Contact our support team to confirm the available options."
-        },
-        "damaged": {
-          "question": "What should I do if my product arrives damaged?",
-          "answer": "Contact us as soon as possible with your order number and clear photographs or videos of the product and packaging."
-        },
-        "shipping": {
-          "question": "Who pays the return delivery cost?",
-          "answer": "If the product is damaged, defective or incorrect, return delivery is handled according to our support instructions. Other returns may include a return delivery charge."
-        }
-      }
-    },
-    "cta": {
-      "title": "Need Help With a Return?",
-      "description": "Contact our support team with your order number and product details, or track your order before submitting a request.",
-      "contact": "Contact Support",
-      "track": "Track Order"
-    }
-  },
   "LoginPage": {
     "badge": "Customer Account",
     "title": "Welcome Back",
@@ -484,7 +233,7 @@
     "button": "Continue to Sign In",
     "redirecting": "Redirecting to Shopify...",
     "continueShopping": "Continue Shopping",
-    "privacy": "Authentication is securely managed by Shopify. Ziwora never receives or stores your password.",
+    "privacy": "Authentication is securely managed by Shopify. Ziwor never receives or stores your password.",
     "loading": {
       "title": "Checking Your Account",
       "description": "Please wait while we check your current session."
@@ -496,23 +245,23 @@
     "visual": {
       "badge": "Secure Customer Access",
       "title": "Your Shopping Journey Continues Here",
-      "description": "Sign in securely to manage orders, account details, saved addresses and checkout information.",
+      "description": "Sign in securely to manage your orders, account details, saved addresses, and checkout information.",
       "security": {
         "title": "Protected by Shopify",
         "description": "A secure one-time verification code replaces traditional passwords."
       },
       "orders": {
         "title": "Manage Your Orders",
-        "description": "Access order history, delivery information and customer account details."
+        "description": "Access your order history, delivery information, and customer account details."
       }
     },
     "signup": {
-      "text": "New to Ziwora?",
+      "text": "New to Ziwor?",
       "button": "Learn About Creating an Account"
     },
     "authenticated": {
       "title": "Welcome Back{name, select, other {, {name}}}",
-      "description": "You are already signed in to your Ziwora customer account.",
+      "description": "You are already signed in to your Ziwor customer account.",
       "account": "Open My Account"
     },
     "errors": {
@@ -520,96 +269,359 @@
     }
   },
   "SignupPage": {
-    "badge": "Create Customer Account",
-    "title": "Join Ziwor",
-    "description": "Continue to Shopify to create or access your secure customer account.",
-    "button": "Continue to Create Account",
-    "redirecting": "Redirecting to Shopify...",
-    "continueShopping": "Continue Shopping",
-    "automaticAccount": "If your email is new, Shopify creates your customer profile automatically after verification.",
     "loading": {
       "title": "Checking Your Account",
-      "description": "Please wait while we check your current customer session."
+      "description": "Please wait while we verify your account status."
     },
-    "visual": {
-      "badge": "Become a Customer",
-      "title": "A Better Shopping Experience Starts Here",
-      "description": "Create your secure customer account to enjoy faster checkout and easier order management."
+    "authenticated": {
+      "title": "Welcome, {name}",
+      "description": "Your account is already active. You can continue shopping and manage your orders."
+    },
+    "continueShopping": "Continue Shopping",
+    "badge": "Create Your Account",
+    "title": "Join Ziwor Global Trading",
+    "description": "Create your customer account securely and enjoy a faster, more convenient shopping experience.",
+    "errors": {
+      "authentication": "We could not start the signup process. Please try again."
     },
     "steps": {
       "email": {
-        "title": "Enter Your Email",
-        "description": "Shopify asks for the email address you want to use for your account."
-      },
-      "code": {
-        "title": "Verify Securely",
-        "description": "Enter the one-time verification code sent to your email."
+        "title": "Secure Email Signup",
+        "description": "You will be redirected to Shopify's secure customer account page to complete your signup."
       }
     },
+    "button": "Create Account",
+    "redirecting": "Redirecting...",
     "benefits": {
-      "title": "Your Account Benefits",
-      "orders": "View and manage your order history",
+      "orders": "View and manage your orders",
       "checkout": "Enjoy a faster checkout experience",
-      "addresses": "Manage saved addresses and details",
-      "returns": "Access returns and account services"
+      "addresses": "Save and manage delivery addresses",
+      "returns": "Access returns and account support"
     },
+    "automaticAccount": "Your account is created and managed securely through Shopify Customer Accounts.",
     "login": {
-      "text": "Already have a customer account?",
-      "button": "Go to Sign In"
-    },
-    "authenticated": {
-      "title": "Your Account Is Ready{name, select, other {, {name}}}",
-      "description": "You are already signed in and can continue shopping.",
-      "account": "Open My Account"
-    },
-    "errors": {
-      "authentication": "We could not complete the Shopify account process. Please try again."
+      "text": "Already have an account?",
+      "button": "Sign In"
     }
   },
   "CartPage": {
-    "badge": "Your Cart",
-    "title": "Shopping Cart",
-    "description": "Your cart is currently empty.",
-    "itemsCount": "{count, plural, one {# item in your cart} other {# items in your cart}}",
+    "badge": "Shopping Cart",
+    "title": "Your Cart",
+    "description": "Review your selected products before checkout.",
+    "itemsCount": "{count} item(s) in your cart",
     "continueShopping": "Continue Shopping",
-    "productImage": "Product image",
-    "unitPrice": "Unit price",
-    "lineTotal": "Total",
-    "remove": "Remove item",
-    "decrease": "Decrease quantity",
-    "increase": "Increase quantity",
-    "unavailable": "Currently unavailable",
-    "updating": "Updating your cart...",
-    "checkout": "Proceed to Checkout",
-    "refresh": "Refresh Cart",
     "loading": {
       "title": "Loading Your Cart",
-      "description": "Please wait while we retrieve your cart."
+      "description": "Please wait while we prepare your cart."
     },
     "empty": {
-      "title": "Your Cart Is Empty",
-      "description": "Explore our collections and add your favourite products to your cart.",
+      "title": "Your Cart is Empty",
+      "description": "Looks like you haven't added any products yet.",
       "button": "Start Shopping"
     },
+    "productImage": "Product Image",
+    "remove": "Remove Item",
+    "increase": "Increase Quantity",
+    "decrease": "Decrease Quantity",
+    "unavailable": "Out of Stock",
+    "unitPrice": "Unit Price",
+    "lineTotal": "Total",
+    "updating": "Updating your cart...",
     "summary": {
       "title": "Order Summary",
-      "items": "{count, plural, one {# item} other {# items}}",
+      "items": "{count} item(s)",
       "subtotal": "Subtotal",
       "shipping": "Shipping",
       "taxes": "Taxes",
       "calculated": "Calculated at checkout",
-      "total": "Estimated Total",
-      "note": "Final charges are confirmed during checkout."
+      "total": "Total",
+      "note": "Final amount will be confirmed at checkout."
     },
+    "checkout": "Proceed to Checkout",
+    "refresh": "Refresh Cart",
     "benefits": {
       "secure": {
-        "title": "Secure Shopify Checkout",
-        "description": "Your payment and checkout information are handled securely."
+        "title": "Secure Checkout",
+        "description": "Your payment information is protected."
       },
       "delivery": {
-        "title": "Delivery Across Qatar",
-        "description": "Delivery options and charges are shown during checkout."
+        "title": "Fast Delivery",
+        "description": "Reliable delivery across Qatar."
       }
+    }
+  },
+  "ProductsPage": {
+    "hero": {
+      "badge": "All Products",
+      "title": "Our Products",
+      "description": "Explore the products currently available in our store."
+    },
+    "loading": "Loading products",
+    "errors": {
+      "fetch": "We could not load the products. Please try again."
+    },
+    "error": {
+      "title": "Unable to Load Products",
+      "retry": "Try Again"
+    },
+    "empty": {
+      "title": "No Products Found",
+      "description": "There are currently no products available."
+    },
+    "count": "{count, plural, =0 {No products} =1 {# product} other {# products}}",
+    "product": {
+      "open": "Open {title}",
+      "sale": "Sale",
+      "categoryFallback": "Product",
+      "view": "View Product",
+      "viewLabel": "View product: {title}"
+    }
+  },
+  "ProductDetailsPage": {
+    "loading": "Loading product",
+    "breadcrumb": {
+      "label": "Breadcrumb",
+      "home": "Home",
+      "products": "Products"
+    },
+    "error": {
+      "title": "Unable to Load Product",
+      "retry": "Try Again"
+    },
+    "errors": {
+      "fetch": "We could not load this product. Please try again.",
+      "addToCart": "Unable to add the product to your cart.",
+      "buyNow": "Unable to continue to checkout.",
+      "variantUnavailable": "This product option is currently unavailable."
+    },
+    "notFound": {
+      "title": "Product Not Found",
+      "description": "The product you are looking for is unavailable or may have been removed.",
+      "backToProducts": "Back to Products"
+    },
+    "product": {
+      "sale": "Sale",
+      "categoryFallback": "Product",
+      "inStock": "In Stock",
+      "outOfStock": "Out of Stock",
+      "quantity": "Quantity",
+      "descriptionFallback": "Explore this product from our Shopify store. Product information, pricing, and availability are updated directly from the store."
+    },
+    "quantity": {
+      "decrease": "Decrease quantity",
+      "increase": "Increase quantity"
+    },
+    "actions": {
+      "addToCart": "Add to Cart",
+      "adding": "Adding...",
+      "buyNow": "Buy Now",
+      "redirecting": "Redirecting..."
+    },
+    "messages": {
+      "addedToCart": "Product added to your cart."
+    },
+    "benefits": {
+      "delivery": {
+        "title": "Fast Delivery",
+        "description": "Delivery across Qatar."
+      },
+      "secure": {
+        "title": "Secure Purchase",
+        "description": "Your order is handled safely."
+      },
+      "quality": {
+        "title": "Quality Checked",
+        "description": "Checked carefully before dispatch."
+      }
+    },
+    "details": {
+      "title": "Product Details"
+    }
+  },
+  "ReturnsRefundsPage": {
+    "badge": "Returns & Refunds",
+    "title": "Simple Returns, Clear Refunds",
+    "description": "Review our return and refund policy, understand the process, and find answers to common questions.",
+    "policy": {
+      "badge": "Our Policy",
+      "title": "Return and Refund Conditions",
+      "description": "Please review these conditions before submitting a return request.",
+      "returnWindow": {
+        "title": "Return Window",
+        "description": "Eligible products may be returned within 14 days of delivery."
+      },
+      "productCondition": {
+        "title": "Product Condition",
+        "description": "Products must be unused, undamaged, and returned in their original packaging."
+      },
+      "proofOfPurchase": {
+        "title": "Proof of Purchase",
+        "description": "A valid receipt, order confirmation, or order number is required."
+      },
+      "refundMethod": {
+        "title": "Refund Method",
+        "description": "Approved refunds are returned through the original payment method."
+      }
+    },
+    "steps": {
+      "badge": "How It Works",
+      "title": "Return Process",
+      "description": "Follow these steps to request a return and receive your refund.",
+      "contact": {
+        "title": "Contact Us",
+        "description": "Contact our support team and provide your order details and reason for return."
+      },
+      "review": {
+        "title": "Request Review",
+        "description": "Our team will review your request and confirm whether the product is eligible."
+      },
+      "return": {
+        "title": "Return the Product",
+        "description": "After approval, follow the provided instructions to return the product."
+      },
+      "refund": {
+        "title": "Receive Your Refund",
+        "description": "Once the returned product is inspected, the approved refund will be processed."
+      },
+      "note": {
+        "title": "Important Information",
+        "description": "Do not return a product before receiving approval and return instructions from our support team."
+      }
+    },
+    "eligibility": {
+      "accepted": {
+        "badge": "Eligible",
+        "title": "Returns We Accept",
+        "unused": "Unused products returned in their original condition.",
+        "packaging": "Products returned with their original packaging, labels, and accessories.",
+        "receipt": "Returns supported by a valid receipt or order confirmation.",
+        "damaged": "Products received damaged, defective, or different from the item ordered."
+      },
+      "excluded": {
+        "badge": "Not Eligible",
+        "title": "Returns We Cannot Accept",
+        "used": "Products that have been used, damaged, altered, or improperly handled after delivery.",
+        "personalCare": "Personal-care, hygiene, or other sealed products that have been opened.",
+        "clearance": "Clearance or final-sale products unless they arrived damaged or defective.",
+        "missingParts": "Products returned without their original parts, accessories, labels, or packaging."
+      }
+    },
+    "faq": {
+      "badge": "Frequently Asked Questions",
+      "title": "Returns and Refunds FAQ",
+      "description": "Find answers to common questions about returns, refunds, exchanges, and delivery issues.",
+      "items": {
+        "time": {
+          "question": "How long do I have to return a product?",
+          "answer": "Eligible products may be returned within 14 days of delivery. The product must meet all return conditions."
+        },
+        "delivery": {
+          "question": "What should I do if my order arrives damaged?",
+          "answer": "Contact our support team as soon as possible and provide your order number, a description of the issue, and clear photos of the damaged product and packaging."
+        },
+        "exchange": {
+          "question": "Can I exchange a product instead of requesting a refund?",
+          "answer": "Exchanges may be available depending on product availability. Contact our support team so we can review your request."
+        },
+        "damaged": {
+          "question": "What happens after my returned product is received?",
+          "answer": "The product will be inspected. Once the return is approved, your refund or eligible exchange will be processed."
+        },
+        "shipping": {
+          "question": "Who pays the return delivery cost?",
+          "answer": "Return delivery costs depend on the reason for the return. If the product is damaged, defective, or incorrect, we will review the delivery cost with your request."
+        }
+      }
+    },
+    "cta": {
+      "title": "Need Help With a Return?",
+      "description": "Contact our support team for assistance or track your existing order.",
+      "contact": "Contact Support",
+      "track": "Track Your Order"
+    }
+  },
+  "TrackOrderPage": {
+    "badge": "Track Your Order",
+    "title": "Track Your Order",
+    "description": "Enter your order number and email address to view your order status, shipment progress, and delivery details.",
+    "continueShopping": "Continue Shopping",
+    "form": {
+      "badge": "Order Tracking",
+      "title": "Find Your Order",
+      "description": "Enter the same email address used when placing your order.",
+      "orderNumber": "Order Number",
+      "orderNumberPlaceholder": "Example: #1001",
+      "email": "Email Address",
+      "emailPlaceholder": "Enter your email address",
+      "submit": "Track Order",
+      "searching": "Searching...",
+      "hint": "Use the email address associated with your order."
+    },
+    "notFound": {
+      "title": "Order Not Found",
+      "description": "We couldn't find an order matching the information you entered. Please check your order number and email address, then try again.",
+      "button": "Continue Shopping"
+    },
+    "summary": {
+      "orderNumber": "Order Number",
+      "orderDate": "Order Date",
+      "delivery": "Estimated Delivery",
+      "status": "Current Status"
+    },
+    "statuses": {
+      "confirmed": "Order Confirmed",
+      "processing": "Processing",
+      "shipped": "Shipped",
+      "inTransit": "In Transit",
+      "outForDelivery": "Out for Delivery",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled"
+    },
+    "timeline": {
+      "pending": "Pending",
+      "confirmed": {
+        "title": "Order Confirmed",
+        "description": "Your order has been received and confirmed."
+      },
+      "processing": {
+        "title": "Preparing Your Order",
+        "description": "We're preparing your items for shipment."
+      },
+      "shipped": {
+        "title": "Order Shipped",
+        "description": "Your order has been handed over to the shipping carrier."
+      },
+      "inTransit": {
+        "title": "In Transit",
+        "description": "Your order is currently on its way."
+      },
+      "outForDelivery": {
+        "title": "Out for Delivery",
+        "description": "Your package is out for delivery today."
+      },
+      "delivered": {
+        "title": "Delivered",
+        "description": "Your order has been successfully delivered."
+      },
+      "cancelled": {
+        "title": "Order Cancelled",
+        "description": "This order has been cancelled."
+      }
+    },
+    "tracking": {
+      "title": "Shipment Progress",
+      "description": "Follow your package from dispatch to delivery."
+    },
+    "orderDetails": {
+      "title": "Order Details",
+      "quantity": "Quantity",
+      "total": "Order Total"
+    },
+    "deliveryDetails": {
+      "title": "Delivery Information",
+      "customer": "Customer",
+      "email": "Email",
+      "address": "Delivery Address"
     }
   }
 }

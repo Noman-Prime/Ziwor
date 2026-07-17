@@ -31,6 +31,11 @@ export const metadata = {
         template: "%s | Ziwora",
     },
     description: "Ziwora Global Trading",
+    icons: {
+        icon: "/favicon.jpeg",
+        shortcut: "/favicon.jpeg",
+        apple: "/favicon.jpeg",
+    },
 };
 
 export function generateStaticParams() {
@@ -46,17 +51,27 @@ export default async function RootLayout({ children, params }) {
         notFound();
     }
 
-    const messages = await getMessages();
-    const isArabic = locale === "ar";
+    const messages = await getMessages({ locale });
+    const isArabic = locale.toLowerCase().startsWith("ar");
 
     return (
-        <html lang={locale} dir={isArabic ? "rtl" : "ltr"} className={`${geistSans.variable} ${geistMono.variable} ${notoSansArabic.variable} h-full antialiased`}>
-            <body className={`min-h-screen bg-white text-[#24191E] ${isArabic ? "font-[family-name:var(--font-arabic)]" : "font-[family-name:var(--font-geist-sans)]"}`}>
-                <NextIntlClientProvider messages={messages}>
+        <html
+            lang={locale}
+            dir={isArabic ? "rtl" : "ltr"}
+            className={`${geistSans.variable} ${geistMono.variable} ${notoSansArabic.variable} h-full antialiased`}
+        >
+            <body
+                className={`min-h-screen bg-white text-[#24191E] ${isArabic
+                    ? "font-[family-name:var(--font-arabic)]"
+                    : "font-[family-name:var(--font-geist-sans)]"
+                    }`}
+            >
+                <NextIntlClientProvider
+                    locale={locale}
+                    messages={messages}
+                >
                     <CustomerProvider>
-                        <CartProvider>
-                            {children}
-                        </CartProvider>
+                        <CartProvider>{children}</CartProvider>
                     </CustomerProvider>
                 </NextIntlClientProvider>
             </body>

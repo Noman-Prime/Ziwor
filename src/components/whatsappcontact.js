@@ -10,28 +10,41 @@ import {
 const WhatsAppBanner = () => {
     const t = useTranslations("WhatsAppBanner");
     const locale = useLocale();
+    const isArabic = locale.toLowerCase().startsWith("ar");
 
     const businessName =
         process.env.NEXT_PUBLIC_BUSINESS_NAME || "";
-    const whatsappNumber =
-        process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "";
+
+    const whatsappNumber = (
+        process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || ""
+    ).replace(/\D/g, "");
+
     const whatsappMessage =
         process.env.NEXT_PUBLIC_WHATSAPP_MESSAGE || "";
+
     const supportHours =
         process.env.NEXT_PUBLIC_SUPPORT_HOURS || "";
 
-    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-        whatsappMessage
-    )}`;
+    const whatsappUrl = whatsappNumber
+        ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+            whatsappMessage
+        )}`
+        : "";
 
     return (
         <section
-            dir={locale === "ar" ? "rtl" : "ltr"}
+            dir={isArabic ? "rtl" : "ltr"}
             className="w-full bg-[#FCF8F6] py-8 sm:py-10 lg:py-14"
         >
             <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
-                <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#25D366] via-[#20C55C] to-[#18B454] px-5 py-6 shadow-[0_15px_40px_rgba(37,211,102,0.22)] sm:px-8 sm:py-8 lg:px-12 lg:py-10">
+                <div
+                    className={`relative overflow-hidden rounded-3xl px-5 py-6 shadow-[0_15px_40px_rgba(37,211,102,0.22)] sm:px-8 sm:py-8 lg:px-12 lg:py-10 ${isArabic
+                            ? "bg-gradient-to-l"
+                            : "bg-gradient-to-r"
+                        } from-[#25D366] via-[#20C55C] to-[#18B454]`}
+                >
                     <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-white/10 blur-xl lg:-right-10 lg:-top-10 lg:h-40 lg:w-40" />
+
                     <div className="absolute -bottom-8 -left-8 h-20 w-20 rounded-full bg-white/10 blur-lg lg:h-28 lg:w-28" />
 
                     <div className="relative flex flex-col items-center gap-6 lg:flex-row lg:items-center lg:justify-between">
@@ -70,29 +83,46 @@ const WhatsAppBanner = () => {
                             </div>
                         </div>
 
-                        <a
-                            href={whatsappUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label={`Contact ${businessName} on WhatsApp`}
-                            className="group inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-[#1BAE50] shadow-lg transition duration-300 hover:-translate-y-1 hover:shadow-2xl lg:min-h-14 lg:px-7 lg:py-4 lg:text-base"
-                        >
-                            <MessageCircleMore size={20} />
-
-                            <span>{t("button")}</span>
-
-                            {locale === "ar" ? (
-                                <ArrowLeft
-                                    size={16}
-                                    className="transition duration-300 group-hover:-translate-x-1"
+                        {whatsappNumber ? (
+                            <a
+                                href={whatsappUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label={t("ariaLabel", {
+                                    businessName:
+                                        businessName || t("defaultBusinessName"),
+                                })}
+                                className="group inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-[#1BAE50] shadow-lg transition duration-300 hover:-translate-y-1 hover:shadow-2xl active:scale-[0.98] lg:min-h-14 lg:px-7 lg:py-4 lg:text-base"
+                            >
+                                <MessageCircleMore
+                                    size={20}
+                                    className="shrink-0"
                                 />
-                            ) : (
-                                <ArrowRight
-                                    size={16}
-                                    className="transition duration-300 group-hover:translate-x-1"
+
+                                <span>{t("button")}</span>
+
+                                {isArabic ? (
+                                    <ArrowLeft
+                                        size={16}
+                                        className="shrink-0 transition duration-300 group-hover:-translate-x-1"
+                                    />
+                                ) : (
+                                    <ArrowRight
+                                        size={16}
+                                        className="shrink-0 transition duration-300 group-hover:translate-x-1"
+                                    />
+                                )}
+                            </a>
+                        ) : (
+                            <span className="inline-flex min-h-11 cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-white/70 px-5 py-3 text-sm font-bold text-[#1BAE50]/60 lg:min-h-14 lg:px-7 lg:py-4 lg:text-base">
+                                <MessageCircleMore
+                                    size={20}
+                                    className="shrink-0"
                                 />
-                            )}
-                        </a>
+
+                                <span>{t("button")}</span>
+                            </span>
+                        )}
                     </div>
                 </div>
             </div>

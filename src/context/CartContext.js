@@ -1,6 +1,13 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import {
+    createContext,
+    useCallback,
+    useContext,
+    useEffect,
+    useMemo,
+    useState,
+} from "react";
 
 const CartContext = createContext(null);
 
@@ -57,25 +64,28 @@ export const CartProvider = ({ children }) => {
         return saveCart(data.cart);
     }, [saveCart]);
 
-    const getCart = useCallback(async (cartId) => {
-        const response = await fetch("/api/cart/get", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                cartId,
-            }),
-        });
+    const getCart = useCallback(
+        async (cartId) => {
+            const response = await fetch("/api/cart/get", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    cartId,
+                }),
+            });
 
-        const data = await response.json();
+            const data = await response.json();
 
-        if (!response.ok || !data.success || !data.cart) {
-            throw new Error(data.message || "Unable to load cart");
-        }
+            if (!response.ok || !data.success || !data.cart) {
+                throw new Error(data.message || "Unable to load cart");
+            }
 
-        return saveCart(data.cart);
-    }, [saveCart]);
+            return saveCart(data.cart);
+        },
+        [saveCart]
+    );
 
     const ensureCart = useCallback(async () => {
         if (cart?.id) {
@@ -95,7 +105,50 @@ export const CartProvider = ({ children }) => {
         return await createCart();
     }, [cart, clearCart, createCart, getCart]);
 
-    const addToCart = useCallback(async (variantId, quantity = 1) => {
+    const addToCart = useCallback(
+        async (variantId, quantity = 1) => {
+            if (!variantId) {
+                throw new Error("Variant ID is required");
+            }
+
+            try {
+                setCartActionLoading(true);
+                setError("");
+
+                const currentCart = await ensureCart();
+
+                const response = await fetch("/api/cart/add", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        cartId: currentCart.id,
+                        variantId,
+                        quantity,
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (!response.ok || !data.success || !data.cart) {
+                    throw new Error(
+                        data.message || "Unable to add item to cart"
+                    );
+                }
+
+                return saveCart(data.cart);
+            } catch (error) {
+                setError(error.message);
+                throw error;
+            } finally {
+                setCartActionLoading(false);
+            }
+        },
+        [ensureCart, saveCart]
+    );
+
+    const buyNow = useCallback(async (variantId, quantity = 1) => {
         if (!variantId) {
             throw new Error("Variant ID is required");
         }
@@ -104,109 +157,142 @@ export const CartProvider = ({ children }) => {
             setCartActionLoading(true);
             setError("");
 
-            const currentCart = await ensureCart();
+            const createResponse = await fetch("/api/cart/create", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
 
-            const response = await fetch("/api/cart/add", {
+            const createData = await createResponse.json();
+
+            if (
+                !createResponse.ok ||
+                !createData.success ||
+                !createData.cart?.id
+            ) {
+                throw new Error(
+                    createData.message || "Unable to create checkout cart"
+                );
+            }
+
+            const addResponse = await fetch("/api/cart/add", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    cartId: currentCart.id,
+                    cartId: createData.cart.id,
                     variantId,
                     quantity,
                 }),
             });
 
-            const data = await response.json();
+            const addData = await addResponse.json();
 
-            if (!response.ok || !data.success || !data.cart) {
-                throw new Error(data.message || "Unable to add item to cart");
+            if (
+                !addResponse.ok ||
+                !addData.success ||
+                !addData.cart?.checkoutUrl
+            ) {
+                throw new Error(
+                    addData.message || "Unable to start checkout"
+                );
             }
 
-            return saveCart(data.cart);
+            window.location.href = addData.cart.checkoutUrl;
         } catch (error) {
             setError(error.message);
             throw error;
         } finally {
             setCartActionLoading(false);
         }
-    }, [ensureCart, saveCart]);
+    }, []);
 
-    const updateCartLine = useCallback(async (lineId, quantity) => {
-        if (!cart?.id || !lineId) {
-            return;
-        }
-
-        if (quantity <= 0) {
-            return await removeCartLine(lineId);
-        }
-
-        try {
-            setCartActionLoading(true);
-            setError("");
-
-            const response = await fetch("/api/cart/update", {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    cartId: cart.id,
-                    lineId,
-                    quantity,
-                }),
-            });
-
-            const data = await response.json();
-
-            if (!response.ok || !data.success || !data.cart) {
-                throw new Error(data.message || "Unable to update cart item");
+    const updateCartLine = useCallback(
+        async (lineId, quantity) => {
+            if (!cart?.id || !lineId) {
+                return;
             }
 
-            return saveCart(data.cart);
-        } catch (error) {
-            setError(error.message);
-            throw error;
-        } finally {
-            setCartActionLoading(false);
-        }
-    }, [cart, saveCart]);
-
-    const removeCartLine = useCallback(async (lineId) => {
-        if (!cart?.id || !lineId) {
-            return;
-        }
-
-        try {
-            setCartActionLoading(true);
-            setError("");
-
-            const response = await fetch("/api/cart/remove", {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    cartId: cart.id,
-                    lineId,
-                }),
-            });
-
-            const data = await response.json();
-
-            if (!response.ok || !data.success || !data.cart) {
-                throw new Error(data.message || "Unable to remove cart item");
+            if (quantity <= 0) {
+                return await removeCartLine(lineId);
             }
 
-            return saveCart(data.cart);
-        } catch (error) {
-            setError(error.message);
-            throw error;
-        } finally {
-            setCartActionLoading(false);
-        }
-    }, [cart, saveCart]);
+            try {
+                setCartActionLoading(true);
+                setError("");
+
+                const response = await fetch("/api/cart/update", {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        cartId: cart.id,
+                        lineId,
+                        quantity,
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (!response.ok || !data.success || !data.cart) {
+                    throw new Error(
+                        data.message || "Unable to update cart item"
+                    );
+                }
+
+                return saveCart(data.cart);
+            } catch (error) {
+                setError(error.message);
+                throw error;
+            } finally {
+                setCartActionLoading(false);
+            }
+        },
+        [cart, saveCart]
+    );
+
+    const removeCartLine = useCallback(
+        async (lineId) => {
+            if (!cart?.id || !lineId) {
+                return;
+            }
+
+            try {
+                setCartActionLoading(true);
+                setError("");
+
+                const response = await fetch("/api/cart/remove", {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        cartId: cart.id,
+                        lineId,
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (!response.ok || !data.success || !data.cart) {
+                    throw new Error(
+                        data.message || "Unable to remove cart item"
+                    );
+                }
+
+                return saveCart(data.cart);
+            } catch (error) {
+                setError(error.message);
+                throw error;
+            } finally {
+                setCartActionLoading(false);
+            }
+        },
+        [cart, saveCart]
+    );
 
     const refreshCart = useCallback(async () => {
         if (!cart?.id) {
@@ -236,7 +322,8 @@ export const CartProvider = ({ children }) => {
                 setLoading(true);
                 setError("");
 
-                const storedCartId = localStorage.getItem(CART_STORAGE_KEY);
+                const storedCartId =
+                    localStorage.getItem(CART_STORAGE_KEY);
 
                 if (!storedCartId) {
                     return;
@@ -266,13 +353,26 @@ export const CartProvider = ({ children }) => {
             cartActionLoading,
             error,
             addToCart,
+            buyNow,
             updateCartLine,
             removeCartLine,
             refreshCart,
             checkout,
             clearCart,
         };
-    }, [cart, loading, cartActionLoading, error, addToCart, updateCartLine, removeCartLine, refreshCart, checkout, clearCart]);
+    }, [
+        cart,
+        loading,
+        cartActionLoading,
+        error,
+        addToCart,
+        buyNow,
+        updateCartLine,
+        removeCartLine,
+        refreshCart,
+        checkout,
+        clearCart,
+    ]);
 
     return (
         <CartContext.Provider value={value}>

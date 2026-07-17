@@ -10,7 +10,7 @@ import { getHeroSliders } from "@/lib/hero-slider";
 
 const Home = async ({ params }) => {
   const { locale } = await params;
-  const sliders = await getHeroSliders(locale);
+  const sliders = (await getHeroSliders(locale)) ?? [];
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#FCF8F6]">
