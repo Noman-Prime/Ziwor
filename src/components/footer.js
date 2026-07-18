@@ -13,6 +13,34 @@ import {
     BadgeDollarSign,
 } from "lucide-react";
 
+const FacebookIcon = ({ className = "" }) => (
+    <svg
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        aria-hidden="true"
+        className={className}
+    >
+        <path d="M13.5 8.25V6.5c0-.67.45-.75.75-.75H16V3h-2.4C10.93 3 10.5 5.02 10.5 6.32v1.93H9V11h1.5v10h3V11h2.25L16 8.25h-2.5Z" />
+    </svg>
+);
+
+const InstagramIcon = ({ className = "" }) => (
+    <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+        className={className}
+    >
+        <rect x="3" y="3" width="18" height="18" rx="5" />
+        <circle cx="12" cy="12" r="4" />
+        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+    </svg>
+);
+
 const Footer = () => {
     const t = useTranslations("Footer");
     const locale = useLocale();
@@ -37,6 +65,12 @@ const Footer = () => {
             whatsappMessage
         )}`
         : "";
+
+    const instagramUrl =
+        "https://www.instagram.com/ziworaglobaltrading?igsh=MXRtNnNxcm1oanIyZQ%3D%3D&utm_source=qr";
+
+    const facebookUrl =
+        "https://www.facebook.com/share/1HW6GF4VGP/?mibextid=wwXIfr";
 
     const navigateTo = (href) => {
         router.push(href);
@@ -117,7 +151,7 @@ const Footer = () => {
 
             <div className="relative border-b border-white/10">
                 <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-5 px-4 py-7 sm:px-6 sm:py-8 md:px-8 lg:flex-row lg:items-center lg:justify-between lg:px-10 xl:px-12">
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-start gap-4">
                         <button
                             type="button"
                             onClick={() => navigateTo("/")}
@@ -141,32 +175,78 @@ const Footer = () => {
                             <p className="mt-1 max-w-xl text-xs leading-5 text-[#C8B5BD] sm:text-sm">
                                 {t("description")}
                             </p>
+
+                            <div className="mt-4 hidden items-center gap-3 lg:flex">
+                                <a
+                                    href={facebookUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label="Facebook"
+                                    className="flex h-10 w-10 items-center justify-center rounded-full border border-[#D4A037]/40 bg-white/5 text-white transition duration-300 hover:-translate-y-1 hover:scale-105 hover:border-[#D4A037] hover:bg-[#D4A037] hover:text-[#260B19]"
+                                >
+                                    <FacebookIcon className="h-[19px] w-[19px]" />
+                                </a>
+
+                                <a
+                                    href={instagramUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label="Instagram"
+                                    className="flex h-10 w-10 items-center justify-center rounded-full border border-[#D4A037]/40 bg-white/5 text-white transition duration-300 hover:-translate-y-1 hover:scale-105 hover:border-[#D4A037] hover:bg-[#D4A037] hover:text-[#260B19]"
+                                >
+                                    <InstagramIcon className="h-[19px] w-[19px]" />
+                                </a>
+                            </div>
                         </div>
                     </div>
 
-                    <div className="flex w-full items-center justify-between gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-3 lg:w-auto lg:min-w-[430px] lg:px-5">
-                        {features.map((item, index) => {
-                            const Icon = item.icon;
+                    <div className="w-full lg:w-auto">
+                        <div className="flex w-full items-center justify-between gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-3 lg:min-w-[430px] lg:px-5">
+                            {features.map((item, index) => {
+                                const Icon = item.icon;
 
-                            return (
-                                <div
-                                    key={item.id}
-                                    className={`flex min-w-0 flex-1 items-center justify-center gap-1.5 px-1 sm:gap-2 sm:px-3 ${index !== features.length - 1
-                                            ? "border-e border-white/10"
-                                            : ""
-                                        }`}
-                                >
-                                    <Icon
-                                        size={15}
-                                        className="shrink-0 text-[#D4A037] sm:h-[17px] sm:w-[17px]"
-                                    />
+                                return (
+                                    <div
+                                        key={item.id}
+                                        className={`flex min-w-0 flex-1 items-center justify-center gap-1.5 px-1 sm:gap-2 sm:px-3 ${index !== features.length - 1
+                                                ? "border-e border-white/10"
+                                                : ""
+                                            }`}
+                                    >
+                                        <Icon
+                                            size={15}
+                                            className="shrink-0 text-[#D4A037] sm:h-[17px] sm:w-[17px]"
+                                        />
 
-                                    <span className="truncate text-[9px] font-bold leading-none text-[#E2D5DA] sm:text-[11px] lg:text-xs">
-                                        {item.title}
-                                    </span>
-                                </div>
-                            );
-                        })}
+                                        <span className="truncate text-[9px] font-bold leading-none text-[#E2D5DA] sm:text-[11px] lg:text-xs">
+                                            {item.title}
+                                        </span>
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        <div className="mt-4 flex w-full items-center gap-3 px-3 lg:hidden">
+                            <a
+                                href={facebookUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label="Facebook"
+                                className="flex h-10 w-10 items-center justify-center rounded-full border border-[#D4A037]/40 bg-white/5 text-white transition duration-300 active:scale-95"
+                            >
+                                <FacebookIcon className="h-[19px] w-[19px]" />
+                            </a>
+
+                            <a
+                                href={instagramUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label="Instagram"
+                                className="flex h-10 w-10 items-center justify-center rounded-full border border-[#D4A037]/40 bg-white/5 text-white transition duration-300 active:scale-95"
+                            >
+                                <InstagramIcon className="h-[19px] w-[19px]" />
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -192,8 +272,8 @@ const Footer = () => {
                                 <ArrowUpRight
                                     size={13}
                                     className={`opacity-0 transition duration-300 md:group-hover:opacity-100 ${isArabic
-                                            ? "rotate-[-90deg] md:group-hover:-translate-x-0.5"
-                                            : "md:group-hover:translate-x-0.5 md:group-hover:-translate-y-0.5"
+                                        ? "rotate-[-90deg] md:group-hover:-translate-x-0.5"
+                                        : "md:group-hover:translate-x-0.5 md:group-hover:-translate-y-0.5"
                                         }`}
                                 />
                             </button>
@@ -221,8 +301,8 @@ const Footer = () => {
                                 <ArrowUpRight
                                     size={13}
                                     className={`opacity-0 transition duration-300 md:group-hover:opacity-100 ${isArabic
-                                            ? "rotate-[-90deg] md:group-hover:-translate-x-0.5"
-                                            : "md:group-hover:translate-x-0.5 md:group-hover:-translate-y-0.5"
+                                        ? "rotate-[-90deg] md:group-hover:-translate-x-0.5"
+                                        : "md:group-hover:translate-x-0.5 md:group-hover:-translate-y-0.5"
                                         }`}
                                 />
                             </button>
@@ -281,7 +361,10 @@ const Footer = () => {
                         {t("copyright", { businessName })}
                     </p>
 
-                    <p className="text-[11px] text-[#A9929C] sm:text-xs">
+                    <p
+                        className={`text-[11px] text-[#A9929C] sm:text-xs ${isArabic ? "sm:ps-20" : "sm:pe-20"
+                            }`}
+                    >
                         {t("poweredBy")}{" "}
                         <a
                             href="https://softrisehub.com"
@@ -302,8 +385,8 @@ const Footer = () => {
                     rel="noopener noreferrer"
                     aria-label={t("contact.whatsapp")}
                     className={`fixed bottom-4 z-50 flex h-12 w-12 items-center justify-center rounded-full border-2 border-white/70 bg-[#25D366] text-white shadow-xl transition duration-300 md:hover:-translate-y-1 md:hover:scale-105 md:hover:bg-[#20BD5A] sm:bottom-6 sm:h-14 sm:w-14 ${isArabic
-                            ? "left-4 sm:left-6"
-                            : "right-4 sm:right-6"
+                        ? "left-4 sm:left-6"
+                        : "right-4 sm:right-6"
                         }`}
                 >
                     <MessageCircleMore
