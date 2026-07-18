@@ -623,5 +623,18 @@
       "email": "Email",
       "address": "Delivery Address"
     }
+  },
+  "Search": {
+    "badge": "Product Search",
+    "title": "Search Results",
+    "resultsFor": "Results for",
+    "productsFound": "{count} products found",
+    "emptyQueryTitle": "Search for a product",
+    "emptyQueryDescription": "Enter a product name in the navbar search field to find what you are looking for.",
+    "notFoundTitle": "Product not found",
+    "notFoundDescription": "We could not find any product matching “{query}”.",
+    "viewAllProducts": "View All Products",
+    "viewProduct": "View Product",
+    "noImage": "No image"
   }
 }

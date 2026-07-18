@@ -623,5 +623,18 @@
       "email": "البريد الإلكتروني",
       "address": "عنوان التسليم"
     }
+  },
+  "Search": {
+    "badge": "البحث عن المنتجات",
+    "title": "نتائج البحث",
+    "resultsFor": "نتائج البحث عن",
+    "productsFound": "تم العثور على {count} منتج",
+    "emptyQueryTitle": "ابحث عن منتج",
+    "emptyQueryDescription": "أدخل اسم المنتج في مربع البحث الموجود في شريط التنقل للعثور على ما تبحث عنه.",
+    "notFoundTitle": "المنتج غير موجود",
+    "notFoundDescription": "لم نتمكن من العثور على أي منتج يطابق “{query}”.",
+    "viewAllProducts": "عرض جميع المنتجات",
+    "viewProduct": "عرض المنتج",
+    "noImage": "لا توجد صورة"
   }
 }

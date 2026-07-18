@@ -138,7 +138,7 @@ const BestSellers = () => {
 
                 {!loading && !error && products.length > 0 && (
                     <div className="grid grid-cols-2 gap-3 sm:gap-5 md:gap-6 lg:grid-cols-4">
-                        {products.map((product) => (
+                        {products.slice(0, 8).map((product) => (
                             <article
                                 key={product.id}
                                 className="group flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-[#E8DDE1] bg-white shadow-[0_8px_28px_rgba(62,28,43,0.06)] transition duration-300 hover:-translate-y-1 hover:border-[#D4A037]/60 hover:shadow-[0_18px_45px_rgba(115,29,70,0.13)]"
