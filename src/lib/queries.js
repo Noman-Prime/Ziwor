@@ -232,3 +232,283 @@ export const HERO_SLIDER_QUERY = `
         }
     }
 `;
+export const HOMEPAGE_PROMOTIONS_QUERY = `
+  query HomepagePromotions($language: LanguageCode!)
+  @inContext(language: $language) {
+    metaobjects(type: "homepage_promotion", first: 50) {
+      nodes {
+        id
+        handle
+
+        title: field(key: "title") {
+          value
+        }
+
+        promotionType: field(key: "promotion_type") {
+          value
+        }
+
+        enabled: field(key: "enabled") {
+          value
+        }
+
+        displayLocation: field(key: "display_location") {
+          value
+        }
+
+        position: field(key: "position") {
+          value
+        }
+
+        heading: field(key: "heading") {
+          value
+        }
+
+        description: field(key: "description") {
+          value
+        }
+
+        image: field(key: "image") {
+          reference {
+            ... on MediaImage {
+              image {
+                url
+                altText
+                width
+                height
+              }
+            }
+          }
+        }
+
+        buttonText: field(key: "button_text") {
+          value
+        }
+
+        collection: field(key: "collection") {
+          reference {
+            ... on Collection {
+              id
+              title
+              handle
+
+              image {
+                url
+                altText
+                width
+                height
+              }
+            }
+          }
+        }
+
+        product: field(key: "product") {
+          reference {
+            ... on Product {
+              id
+              title
+              handle
+              availableForSale
+
+              featuredImage {
+                url
+                altText
+                width
+                height
+              }
+
+              selectedOrFirstAvailableVariant {
+                id
+                title
+                availableForSale
+
+                price {
+                  amount
+                  currencyCode
+                }
+
+                compareAtPrice {
+                  amount
+                  currencyCode
+                }
+
+                image {
+                  url
+                  altText
+                  width
+                  height
+                }
+              }
+            }
+          }
+        }
+
+        startDate: field(key: "start_date") {
+          value
+        }
+
+        endDate: field(key: "end_date") {
+          value
+        }
+
+        backgroundColor: field(key: "background_color") {
+          value
+        }
+      }
+    }
+  }
+`;
+
+export const WHATSAPP_BANNER_QUERY = `
+  query WhatsAppBanner($language: LanguageCode!)
+  @inContext(language: $language) {
+    metaobjects(type: "whatsapp_banner", first: 10) {
+      edges {
+        node {
+          id
+          handle
+
+          showBanner: field(key: "show_banner") {
+            value
+          }
+
+          heading: field(key: "heading") {
+            value
+          }
+
+          description: field(key: "description") {
+            value
+          }
+
+          whatsappNumber: field(key: "whatsapp_number") {
+            value
+          }
+
+          buttonText: field(key: "button_text") {
+            value
+          }
+
+          backgroundColor: field(key: "background_color") {
+            value
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const BRAND_LOGO_QUERY = `
+    query BrandLogo($language: LanguageCode!)
+    @inContext(language: $language) {
+        metaobjects(
+            type: "brand_logo"
+            first: 10
+        ) {
+            edges {
+                node {
+                    id
+                    handle
+
+                    fields {
+                        key
+                        value
+
+                        reference {
+                            ... on MediaImage {
+                                image {
+                                    url
+                                    altText
+                                    width
+                                    height
+                                }
+                            }
+
+                            ... on GenericFile {
+                                url
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+`;
+export const SOCIAL_MEDIA_QUERY = `
+    query SocialMedia($language: LanguageCode!)
+    @inContext(language: $language) {
+        metaobjects(type: "social_media", first: 20) {
+            edges {
+                node {
+                    id
+                    handle
+
+                    showSocialMedia: field(key: "show_socail_media") {
+                        value
+                    }
+
+                    name: field(key: "name") {
+                        value
+                    }
+
+                    image: field(key: "image") {
+                        reference {
+                            ... on MediaImage {
+                                image {
+                                    url
+                                    altText
+                                    width
+                                    height
+                                }
+                            }
+
+                            ... on GenericFile {
+                                url
+                            }
+                        }
+                    }
+
+                    link: field(key: "link") {
+                        value
+                    }
+                }
+            }
+        }
+    }
+`;
+
+export const FOOTER_CONTACT_QUERY = `
+    query FooterContact($language: LanguageCode!)
+    @inContext(language: $language) {
+        metaobjects(
+            type: "footer_contact"
+            first: 1
+        ) {
+            edges {
+                node {
+                    id
+                    handle
+
+                    email: field(key: "email") {
+                        value
+                    }
+
+                    whatsappNumber: field(
+                        key: "whatsapp_number"
+                    ) {
+                        value
+                    }
+
+                    whatsappMessage: field(
+                        key: "whatsapp_message"
+                    ) {
+                        value
+                    }
+
+                    address: field(key: "address") {
+                        value
+                    }
+                }
+            }
+        }
+    }
+`;
