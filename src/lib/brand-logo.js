@@ -3,10 +3,11 @@ import { BRAND_LOGO_QUERY } from "@/lib/queries";
 
 export const getBrandLogo = async (locale = "en") => {
     try {
-        const language =
-            locale?.toLowerCase().startsWith("ar")
-                ? "AR"
-                : "EN";
+        const language = locale
+            ?.toLowerCase()
+            .startsWith("ar")
+            ? "AR"
+            : "EN";
 
         const response = await shopifyFetch({
             query: BRAND_LOGO_QUERY,
@@ -26,7 +27,8 @@ export const getBrandLogo = async (locale = "en") => {
                     ])
                 );
 
-                const logoField = fields.logo;
+                const logoReference =
+                    fields.logo?.reference;
 
                 return {
                     id: node?.id || "",
@@ -39,21 +41,21 @@ export const getBrandLogo = async (locale = "en") => {
 
                     logo: {
                         url:
-                            logoField?.reference?.image?.url ||
-                            logoField?.reference?.url ||
+                            logoReference?.image?.url ||
+                            logoReference?.url ||
                             "",
 
                         altText:
-                            logoField?.reference?.image?.altText ||
+                            logoReference?.image?.altText ||
                             fields.business_name?.value ||
-                            "",
+                            "Brand logo",
 
                         width:
-                            logoField?.reference?.image?.width ||
+                            logoReference?.image?.width ||
                             null,
 
                         height:
-                            logoField?.reference?.image?.height ||
+                            logoReference?.image?.height ||
                             null,
                     },
 
@@ -65,16 +67,14 @@ export const getBrandLogo = async (locale = "en") => {
                 };
             }) || [];
 
-        return (
-            brands.find(
-                (brand) =>
-                    brand.showBrand &&
-                    brand.logo.url
-            ) || null
+        const activeBrand = brands.find(
+            (brand) => brand.showBrand
         );
+
+        return activeBrand || null;
     } catch (error) {
         console.error(
-            "Failed to fetch brand logo:",
+            "Failed to fetch brand data:",
             error
         );
 

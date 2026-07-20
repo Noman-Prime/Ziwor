@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import {
@@ -18,24 +19,46 @@ const getSocialLink = (value) => {
         return "";
     }
 
-    if (typeof value !== "string") {
+    if (typeof value === "object") {
         return value?.url || "";
+    }
+
+    if (typeof value !== "string") {
+        return "";
     }
 
     try {
         const parsedValue = JSON.parse(value);
 
-        return parsedValue?.url || "";
+        return parsedValue?.url || value;
     } catch {
         return value;
     }
 };
 
-const Footer = ({
-    brand,
-    socialMedia = [],
-    footerContact = null,
-}) => {
+const getSocialImageUrl = (item) => {
+    if (!item) {
+        return "";
+    }
+
+    if (typeof item?.image === "string") {
+        return item.image.trim();
+    }
+
+    return (
+        item?.image?.url ||
+        item?.image?.image?.url ||
+        item?.image?.reference?.url ||
+        item?.image?.reference?.image?.url ||
+        ""
+    ).trim();
+};
+
+const Footer = () => {
+    const [brand, setBrand] = useState(null);
+    const [socialMedia, setSocialMedia] = useState([]);
+    const [footerContact, setFooterContact] = useState(null);
+
     const t = useTranslations("Footer");
     const locale = useLocale();
     const router = useRouter();
@@ -45,53 +68,218 @@ const Footer = ({
         .startsWith("ar");
 
     const businessName =
-        brand?.businessName ||
-        process.env.NEXT_PUBLIC_BUSINESS_NAME ||
-        "Ziwor Global Trading";
+        typeof brand?.businessName === "string" &&
+            brand.businessName.trim()
+            ? brand.businessName.trim()
+            : process.env.NEXT_PUBLIC_BUSINESS_NAME ||
+            "Ziwor Global Trading";
 
     const brandLogo =
-        brand?.logo?.url || "/ziwora.png";
+        typeof brand?.logo?.url === "string"
+            ? brand.logo.url.trim()
+            : "";
 
     const brandLogoAlt =
-        brand?.logo?.altText || businessName;
+        typeof brand?.logo?.altText === "string" &&
+            brand.logo.altText.trim()
+            ? brand.logo.altText.trim()
+            : businessName;
 
     const brandDescription =
-        brand?.description || t("description");
+        typeof brand?.description === "string" &&
+            brand.description.trim()
+            ? brand.description.trim()
+            : t("description");
 
     const supportEmail =
-        footerContact?.email || "";
+        typeof footerContact?.email === "string"
+            ? footerContact.email.trim()
+            : "";
 
     const footerAddress =
-        footerContact?.address || "";
+        typeof footerContact?.address === "string"
+            ? footerContact.address.trim()
+            : "";
 
-    const whatsappNumber = (
+    const whatsappNumber = String(
         footerContact?.whatsappNumber || ""
     ).replace(/\D/g, "");
 
     const whatsappMessage =
-        footerContact?.whatsappMessage || "";
+        typeof footerContact?.whatsappMessage === "string"
+            ? footerContact.whatsappMessage.trim()
+            : "";
 
     const whatsappUrl = whatsappNumber
-        ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-            whatsappMessage
-        )}`
+        ? `https://wa.me/${whatsappNumber}${whatsappMessage
+            ? `?text=${encodeURIComponent(
+                whatsappMessage
+            )}`
+            : ""
+        }`
         : "";
 
-    const visibleSocialMedia = Array.isArray(
-        socialMedia
-    )
+    const visibleSocialMedia = Array.isArray(socialMedia)
         ? socialMedia
-            .map((item) => ({
+            .map((item, index) => ({
                 ...item,
+                originalIndex: index,
                 link: getSocialLink(item?.link),
+                imageUrl: getSocialImageUrl(item),
             }))
             .filter(
                 (item) =>
-                    item?.showSocialMedia &&
+                    item?.showSocialMedia !== false &&
                     item?.link &&
-                    item?.image?.url
+                    item?.imageUrl
             )
         : [];
+
+    useEffect(() => {
+        const controller = new AbortController();
+
+        const fetchBrand = async () => {
+            try {
+                const response = await fetch(
+                    `/api/brand?locale=${encodeURIComponent(
+                        locale
+                    )}`,
+                    {
+                        method: "GET",
+                        signal: controller.signal,
+                        cache: "no-store",
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error(
+                        `Failed to load brand: ${response.status}`
+                    );
+                }
+
+                const data = await response.json();
+
+                if (!controller.signal.aborted) {
+                    setBrand(data || null);
+                }
+            } catch (error) {
+                if (error.name !== "AbortError") {
+                    console.error(
+                        "Footer brand fetch error:",
+                        error
+                    );
+
+                    setBrand(null);
+                }
+            }
+        };
+
+        fetchBrand();
+
+        return () => {
+            controller.abort();
+        };
+    }, [locale]);
+
+    useEffect(() => {
+        const controller = new AbortController();
+
+        const fetchSocialMedia = async () => {
+            try {
+                const response = await fetch(
+                    `/api/social-media?locale=${encodeURIComponent(
+                        locale
+                    )}`,
+                    {
+                        method: "GET",
+                        signal: controller.signal,
+                        cache: "no-store",
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error(
+                        `Failed to load social media: ${response.status}`
+                    );
+                }
+
+                const data = await response.json();
+
+                const entries = Array.isArray(data)
+                    ? data
+                    : Array.isArray(data?.socialMedia)
+                        ? data.socialMedia
+                        : Array.isArray(data?.data)
+                            ? data.data
+                            : [];
+
+                if (!controller.signal.aborted) {
+                    setSocialMedia(entries);
+                }
+            } catch (error) {
+                if (error.name !== "AbortError") {
+                    console.error(
+                        "Footer social media fetch error:",
+                        error
+                    );
+
+                    setSocialMedia([]);
+                }
+            }
+        };
+
+        fetchSocialMedia();
+
+        return () => {
+            controller.abort();
+        };
+    }, [locale]);
+
+    useEffect(() => {
+        const controller = new AbortController();
+
+        const fetchFooterContact = async () => {
+            try {
+                const response = await fetch(
+                    `/api/footer-contact?locale=${encodeURIComponent(
+                        locale
+                    )}`,
+                    {
+                        method: "GET",
+                        signal: controller.signal,
+                        cache: "no-store",
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error(
+                        `Failed to load footer contact: ${response.status}`
+                    );
+                }
+
+                const data = await response.json();
+
+                if (!controller.signal.aborted) {
+                    setFooterContact(data || null);
+                }
+            } catch (error) {
+                if (error.name !== "AbortError") {
+                    console.error(
+                        "Footer contact fetch error:",
+                        error
+                    );
+
+                    setFooterContact(null);
+                }
+            }
+        };
+
+        fetchFooterContact();
+
+        return () => {
+            controller.abort();
+        };
+    }, [locale]);
 
     const navigateTo = (href) => {
         router.push(href);
@@ -162,36 +350,48 @@ const Footer = ({
     ];
 
     const renderSocialLinks = (mobile = false) =>
-        visibleSocialMedia.map((item) => (
-            <a
-                key={item.id || item.handle}
-                href={item.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={
-                    item.name || "Social media"
-                }
-                title={item.name || ""}
-                className={
-                    mobile
-                        ? "flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#D4A037]/40 bg-white/5 p-2 text-white transition duration-300 active:scale-95"
-                        : "flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#D4A037]/40 bg-white/5 p-2 text-white transition duration-300 hover:-translate-y-1 hover:scale-105 hover:border-[#D4A037] hover:bg-[#D4A037]"
-                }
-            >
-                <Image
-                    src={item.image.url}
-                    alt={
-                        item.image.altText ||
-                        item.name ||
-                        "Social media"
+        visibleSocialMedia.map((item) => {
+            const socialName =
+                typeof item?.name === "string" &&
+                    item.name.trim()
+                    ? item.name.trim()
+                    : "Social media";
+
+            const socialImageAlt =
+                typeof item?.image?.altText === "string" &&
+                    item.image.altText.trim()
+                    ? item.image.altText.trim()
+                    : socialName;
+
+            return (
+                <a
+                    key={
+                        item.id ||
+                        item.handle ||
+                        `${socialName}-${item.originalIndex}`
                     }
-                    width={item.image.width || 24}
-                    height={item.image.height || 24}
-                    unoptimized
-                    className="h-full w-full object-contain"
-                />
-            </a>
-        ));
+                    href={item.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={socialName}
+                    title={socialName}
+                    className={
+                        mobile
+                            ? "flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#D4A037]/40 bg-white/5 p-2 transition duration-300 active:scale-95"
+                            : "flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#D4A037]/40 bg-white/5 p-2 transition duration-300 hover:-translate-y-1 hover:scale-105 hover:border-[#D4A037] hover:bg-[#D4A037]"
+                    }
+                >
+                    <img
+                        src={item.imageUrl}
+                        alt={socialImageAlt}
+                        width="24"
+                        height="24"
+                        loading="lazy"
+                        className="block h-full w-full object-contain"
+                    />
+                </a>
+            );
+        });
 
     return (
         <footer
@@ -205,23 +405,32 @@ const Footer = ({
             <div className="relative border-b border-white/10">
                 <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-5 px-4 py-7 sm:px-6 sm:py-8 md:px-8 lg:flex-row lg:items-center lg:justify-between lg:px-10 xl:px-12">
                     <div className="flex items-start gap-4">
-                        <button
-                            type="button"
-                            onClick={() =>
-                                navigateTo("/")
-                            }
-                            aria-label={businessName}
-                            className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white p-2 shadow-lg"
-                        >
-                            <Image
-                                src={brandLogo}
-                                alt={brandLogoAlt}
-                                width={56}
-                                height={56}
-                                unoptimized
-                                className="h-full w-full object-contain"
-                            />
-                        </button>
+                        {brand?.showBrand !== false &&
+                            brandLogo && (
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        navigateTo("/")
+                                    }
+                                    aria-label={businessName}
+                                    className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white p-2 shadow-lg"
+                                >
+                                    <Image
+                                        src={brandLogo}
+                                        alt={brandLogoAlt}
+                                        width={
+                                            brand?.logo?.width ||
+                                            56
+                                        }
+                                        height={
+                                            brand?.logo?.height ||
+                                            56
+                                        }
+                                        unoptimized
+                                        className="h-full w-full object-contain"
+                                    />
+                                </button>
+                            )}
 
                         <div>
                             <h2 className="text-xl font-black text-white sm:text-2xl">
@@ -275,9 +484,7 @@ const Footer = ({
                         {visibleSocialMedia.length >
                             0 && (
                                 <div className="mt-4 flex w-full flex-wrap items-center gap-3 px-3 lg:hidden">
-                                    {renderSocialLinks(
-                                        true
-                                    )}
+                                    {renderSocialLinks(true)}
                                 </div>
                             )}
                     </div>
@@ -298,15 +505,11 @@ const Footer = ({
                                 key={item.id}
                                 type="button"
                                 onClick={() =>
-                                    navigateTo(
-                                        item.href
-                                    )
+                                    navigateTo(item.href)
                                 }
                                 className="group flex w-fit items-center gap-1.5 text-start text-xs leading-5 text-[#C8B5BD] transition duration-300 hover:text-white sm:text-sm"
                             >
-                                <span>
-                                    {item.title}
-                                </span>
+                                <span>{item.title}</span>
 
                                 <ArrowUpRight
                                     size={13}
@@ -328,32 +531,26 @@ const Footer = ({
                     <span className="mt-2 block h-0.5 w-8 rounded-full bg-[#D4A037]" />
 
                     <div className="mt-5 flex flex-col gap-3">
-                        {supportLinks.map(
-                            (item) => (
-                                <button
-                                    key={item.id}
-                                    type="button"
-                                    onClick={() =>
-                                        navigateTo(
-                                            item.href
-                                        )
-                                    }
-                                    className="group flex w-fit items-center gap-1.5 text-start text-xs leading-5 text-[#C8B5BD] transition duration-300 hover:text-white sm:text-sm"
-                                >
-                                    <span>
-                                        {item.title}
-                                    </span>
+                        {supportLinks.map((item) => (
+                            <button
+                                key={item.id}
+                                type="button"
+                                onClick={() =>
+                                    navigateTo(item.href)
+                                }
+                                className="group flex w-fit items-center gap-1.5 text-start text-xs leading-5 text-[#C8B5BD] transition duration-300 hover:text-white sm:text-sm"
+                            >
+                                <span>{item.title}</span>
 
-                                    <ArrowUpRight
-                                        size={13}
-                                        className={`opacity-0 transition duration-300 md:group-hover:opacity-100 ${isArabic
-                                                ? "rotate-[-90deg] md:group-hover:-translate-x-0.5"
-                                                : "md:group-hover:translate-x-0.5 md:group-hover:-translate-y-0.5"
-                                            }`}
-                                    />
-                                </button>
-                            )
-                        )}
+                                <ArrowUpRight
+                                    size={13}
+                                    className={`opacity-0 transition duration-300 md:group-hover:opacity-100 ${isArabic
+                                            ? "rotate-[-90deg] md:group-hover:-translate-x-0.5"
+                                            : "md:group-hover:translate-x-0.5 md:group-hover:-translate-y-0.5"
+                                        }`}
+                                />
+                            </button>
+                        ))}
                     </div>
                 </div>
 
@@ -371,7 +568,7 @@ const Footer = ({
                                     <MapPin size={17} />
                                 </span>
 
-                                <span className="text-xs sm:text-sm">
+                                <span className="whitespace-pre-line text-xs sm:text-sm">
                                     {footerAddress}
                                 </span>
                             </div>
@@ -433,14 +630,12 @@ const Footer = ({
                 </div>
             </div>
 
-            {whatsappNumber && (
+            {whatsappNumber && whatsappUrl && (
                 <a
                     href={whatsappUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label={t(
-                        "contact.whatsapp"
-                    )}
+                    aria-label={t("contact.whatsapp")}
                     className={`fixed bottom-4 z-50 flex h-12 w-12 items-center justify-center rounded-full border-2 border-white/70 bg-[#25D366] text-white shadow-xl transition duration-300 md:hover:-translate-y-1 md:hover:scale-105 md:hover:bg-[#20BD5A] sm:bottom-6 sm:h-14 sm:w-14 ${isArabic
                             ? "left-4 sm:left-6"
                             : "right-4 sm:right-6"

@@ -433,6 +433,7 @@ export const BRAND_LOGO_QUERY = `
         }
     }
 `;
+
 export const SOCIAL_MEDIA_QUERY = `
     query SocialMedia($language: LanguageCode!)
     @inContext(language: $language) {
@@ -479,10 +480,7 @@ export const SOCIAL_MEDIA_QUERY = `
 export const FOOTER_CONTACT_QUERY = `
     query FooterContact($language: LanguageCode!)
     @inContext(language: $language) {
-        metaobjects(
-            type: "footer_contact"
-            first: 1
-        ) {
+        metaobjects(type: "footer_contact", first: 1) {
             edges {
                 node {
                     id
@@ -492,15 +490,11 @@ export const FOOTER_CONTACT_QUERY = `
                         value
                     }
 
-                    whatsappNumber: field(
-                        key: "whatsapp_number"
-                    ) {
+                    whatsappNumber: field(key: "whatsapp_number") {
                         value
                     }
 
-                    whatsappMessage: field(
-                        key: "whatsapp_message"
-                    ) {
+                    whatsappMessage: field(key: "whatsapp_message") {
                         value
                     }
 

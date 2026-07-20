@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { useCart } from "@/context/CartContext";
@@ -20,11 +19,12 @@ import {
     FiUserPlus,
 } from "react-icons/fi";
 
-const Navbar = ({ brand }) => {
+const Navbar = () => {
     const [menuOpen, setMenuOpen] = useState(false);
     const [accountOpen, setAccountOpen] = useState(false);
     const [searchOpen, setSearchOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
+    const [brand, setBrand] = useState(null);
 
     const accountRef = useRef(null);
     const searchRef = useRef(null);
@@ -41,13 +41,66 @@ const Navbar = ({ brand }) => {
         : Number(totalQuantity) || 0;
 
     const brandLogo =
-        brand?.logo?.url || "/ziwora.png";
+        typeof brand?.logo?.url === "string"
+            ? brand.logo.url.trim()
+            : "";
 
-    const brandName =
-        brand?.businessName || "Ziwor Global Trading";
+    const businessName =
+        typeof brand?.businessName === "string" &&
+        brand.businessName.trim()
+            ? brand.businessName.trim()
+            : "Ziwor Global Trading";
 
-    const brandAlt =
-        brand?.logo?.altText || brandName;
+    const brandLogoAlt =
+        typeof brand?.logo?.altText === "string" &&
+        brand.logo.altText.trim()
+            ? brand.logo.altText.trim()
+            : businessName;
+
+    useEffect(() => {
+        const controller = new AbortController();
+
+        const fetchBrand = async () => {
+            try {
+                const response = await fetch(
+                    `/api/brand?locale=${encodeURIComponent(
+                        locale
+                    )}`,
+                    {
+                        method: "GET",
+                        signal: controller.signal,
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error(
+                        `Failed to load brand: ${response.status}`
+                    );
+                }
+
+                const data = await response.json();
+
+                if (!controller.signal.aborted) {
+                    setBrand(data || null);
+                }
+            } catch (error) {
+                if (error.name !== "AbortError") {
+                    console.error(
+                        "Navbar brand fetch error:",
+                        error
+                    );
+
+                    setBrand(null);
+                }
+            }
+        };
+
+        fetchBrand();
+
+        return () => {
+            controller.abort();
+        };
+    }, [locale]);
 
     useEffect(() => {
         const handleOutsideClick = (event) => {
@@ -99,24 +152,28 @@ const Navbar = ({ brand }) => {
         setMenuOpen(false);
         setAccountOpen(false);
         setSearchOpen(false);
+
         router.push(href);
     };
 
     const toggleMenu = () => {
         setAccountOpen(false);
         setSearchOpen(false);
+
         setMenuOpen((current) => !current);
     };
 
     const toggleAccount = () => {
         setMenuOpen(false);
         setSearchOpen(false);
+
         setAccountOpen((current) => !current);
     };
 
     const toggleSearch = () => {
         setMenuOpen(false);
         setAccountOpen(false);
+
         setSearchOpen((current) => !current);
     };
 
@@ -190,26 +247,38 @@ const Navbar = ({ brand }) => {
                         aria-expanded={menuOpen}
                         className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#F8EDF1] text-[26px] text-[#7A1E3A] transition hover:bg-[#F1DDE5] lg:hidden"
                     >
-                        {menuOpen ? <MdClose /> : <MdMenu />}
+                        {menuOpen ? (
+                            <MdClose />
+                        ) : (
+                            <MdMenu />
+                        )}
                     </button>
 
-                    <button
-                        type="button"
-                        onClick={() => navigateTo("/")}
-                        aria-label={brandName}
-                        className="flex shrink-0 items-center"
-                    >
-                        <Image
-                            src={brandLogo}
-                            alt={brandAlt}
-                            width={220}
-                            height={80}
-                            priority
-                            unoptimized
-                            sizes="(max-width:640px) 150px, 200px"
-                            className="h-11 w-auto object-contain sm:h-12 lg:h-14"
-                        />
-                    </button>
+                    {brand?.showBrand !== false &&
+                        brandLogo && (
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    navigateTo("/")
+                                }
+                                aria-label={brandLogoAlt}
+                                className="flex shrink-0 items-center gap-2"
+                            >
+                                <img
+                                    src={brandLogo}
+                                    alt={brandLogoAlt}
+                                    width="220"
+                                    height="80"
+                                    className="h-11 w-auto object-contain sm:h-12 lg:h-14"
+                                />
+
+                                {businessName && (
+                                    <span className="hidden whitespace-nowrap text-sm font-extrabold text-[#7A1E3A] 2xl:block">
+                                        {businessName}
+                                    </span>
+                                )}
+                            </button>
+                        )}
                 </div>
 
                 <div className="hidden items-center gap-2 lg:flex xl:gap-3">
@@ -242,10 +311,11 @@ const Navbar = ({ brand }) => {
                         className="relative hidden h-10 w-[118px] grid-cols-2 rounded-full border border-[#D8AEBB] bg-[#F8EDF1] p-1 xl:grid"
                     >
                         <span
-                            className={`absolute top-1 h-8 w-[53px] rounded-full bg-[#7A1E3A] shadow-sm transition-all duration-300 ${locale === "ar"
+                            className={`absolute top-1 h-8 w-[53px] rounded-full bg-[#7A1E3A] shadow-sm transition-all duration-300 ${
+                                locale === "ar"
                                     ? "translate-x-[57px]"
                                     : "translate-x-0"
-                                }`}
+                            }`}
                         />
 
                         <button
@@ -254,10 +324,11 @@ const Navbar = ({ brand }) => {
                                 changeLanguage("en")
                             }
                             aria-pressed={locale === "en"}
-                            className={`relative z-10 flex items-center justify-center rounded-full text-xs font-bold transition-colors duration-300 ${locale === "en"
+                            className={`relative z-10 flex items-center justify-center rounded-full text-xs font-bold transition-colors duration-300 ${
+                                locale === "en"
                                     ? "text-white"
                                     : "text-[#7A1E3A]"
-                                }`}
+                            }`}
                         >
                             EN
                         </button>
@@ -268,10 +339,11 @@ const Navbar = ({ brand }) => {
                                 changeLanguage("ar")
                             }
                             aria-pressed={locale === "ar"}
-                            className={`relative z-10 flex items-center justify-center rounded-full text-xs font-bold transition-colors duration-300 ${locale === "ar"
+                            className={`relative z-10 flex items-center justify-center rounded-full text-xs font-bold transition-colors duration-300 ${
+                                locale === "ar"
                                     ? "text-white"
                                     : "text-[#7A1E3A]"
-                                }`}
+                            }`}
                         >
                             عربي
                         </button>
@@ -286,10 +358,11 @@ const Navbar = ({ brand }) => {
                             onClick={toggleSearch}
                             aria-label={t("search")}
                             aria-expanded={searchOpen}
-                            className={`flex h-10 w-10 items-center justify-center rounded-full text-[23px] transition sm:text-[25px] ${searchOpen
+                            className={`flex h-10 w-10 items-center justify-center rounded-full text-[23px] transition sm:text-[25px] ${
+                                searchOpen
                                     ? "bg-[#7A1E3A] text-white"
                                     : "text-[#222] hover:bg-[#F8EDF1] hover:text-[#7A1E3A]"
-                                }`}
+                            }`}
                         >
                             {searchOpen ? (
                                 <MdClose />
@@ -299,10 +372,11 @@ const Navbar = ({ brand }) => {
                         </button>
 
                         <div
-                            className={`absolute inset-x-4 top-full z-[100] mt-3 origin-top rounded-2xl border border-[#E8D8DF] bg-white p-3 shadow-[0_18px_45px_rgba(62,28,43,0.18)] transition duration-200 sm:inset-x-auto sm:end-0 sm:top-[calc(100%+12px)] sm:mt-0 sm:w-[340px] ${searchOpen
+                            className={`absolute inset-x-4 top-full z-[100] mt-3 origin-top rounded-2xl border border-[#E8D8DF] bg-white p-3 shadow-[0_18px_45px_rgba(62,28,43,0.18)] transition duration-200 sm:inset-x-auto sm:end-0 sm:top-[calc(100%+12px)] sm:mt-0 sm:w-[340px] ${
+                                searchOpen
                                     ? "visible translate-y-0 scale-100 opacity-100"
                                     : "invisible -translate-y-2 scale-95 opacity-0"
-                                }`}
+                            }`}
                         >
                             <form
                                 onSubmit={handleSearch}
@@ -365,19 +439,21 @@ const Navbar = ({ brand }) => {
                             onClick={toggleAccount}
                             aria-label={t("account")}
                             aria-expanded={accountOpen}
-                            className={`flex h-10 w-10 items-center justify-center rounded-full text-[19px] transition sm:text-[21px] ${accountOpen
+                            className={`flex h-10 w-10 items-center justify-center rounded-full text-[19px] transition sm:text-[21px] ${
+                                accountOpen
                                     ? "bg-[#7A1E3A] text-white"
                                     : "text-[#222] hover:bg-[#F8EDF1] hover:text-[#7A1E3A]"
-                                }`}
+                            }`}
                         >
                             <FaUserAlt />
                         </button>
 
                         <div
-                            className={`absolute end-0 top-[calc(100%+12px)] z-[100] w-[230px] origin-top rounded-2xl border border-[#E8D8DF] bg-white p-3 shadow-[0_18px_45px_rgba(62,28,43,0.18)] transition duration-200 ${accountOpen
+                            className={`absolute end-0 top-[calc(100%+12px)] z-[100] w-[230px] origin-top rounded-2xl border border-[#E8D8DF] bg-white p-3 shadow-[0_18px_45px_rgba(62,28,43,0.18)] transition duration-200 ${
+                                accountOpen
                                     ? "visible translate-y-0 scale-100 opacity-100"
                                     : "invisible -translate-y-2 scale-95 opacity-0"
-                                }`}
+                            }`}
                         >
                             <div className="mb-3 border-b border-[#EADCE2] px-2 pb-3">
                                 <p className="text-sm font-extrabold text-[#2A2024]">
@@ -420,10 +496,11 @@ const Navbar = ({ brand }) => {
             </div>
 
             <div
-                className={`absolute left-0 top-full w-full overflow-hidden bg-white shadow-xl transition-all duration-300 lg:hidden ${menuOpen
+                className={`absolute left-0 top-full w-full overflow-hidden bg-white shadow-xl transition-all duration-300 lg:hidden ${
+                    menuOpen
                         ? "max-h-[700px] border-b border-[#EADCE2] opacity-100"
                         : "pointer-events-none max-h-0 opacity-0"
-                    }`}
+                }`}
             >
                 <div className="flex flex-col gap-3 px-4 py-5 sm:px-6">
                     {menuItems.map(
@@ -462,10 +539,11 @@ const Navbar = ({ brand }) => {
                             className="relative mx-auto grid h-12 w-full max-w-[240px] grid-cols-2 rounded-full border border-[#D8AEBB] bg-[#F8EDF1] p-1"
                         >
                             <span
-                                className={`absolute top-1 h-10 w-[calc(50%-4px)] rounded-full bg-[#7A1E3A] shadow-sm transition-all duration-300 ${locale === "ar"
+                                className={`absolute top-1 h-10 w-[calc(50%-4px)] rounded-full bg-[#7A1E3A] shadow-sm transition-all duration-300 ${
+                                    locale === "ar"
                                         ? "left-[50%]"
                                         : "left-1"
-                                    }`}
+                                }`}
                             />
 
                             <button
@@ -476,10 +554,11 @@ const Navbar = ({ brand }) => {
                                 aria-pressed={
                                     locale === "en"
                                 }
-                                className={`relative z-10 rounded-full text-sm font-bold transition ${locale === "en"
+                                className={`relative z-10 rounded-full text-sm font-bold transition ${
+                                    locale === "en"
                                         ? "text-white"
                                         : "text-[#7A1E3A]"
-                                    }`}
+                                }`}
                             >
                                 English
                             </button>
@@ -492,10 +571,11 @@ const Navbar = ({ brand }) => {
                                 aria-pressed={
                                     locale === "ar"
                                 }
-                                className={`relative z-10 rounded-full text-sm font-bold transition ${locale === "ar"
+                                className={`relative z-10 rounded-full text-sm font-bold transition ${
+                                    locale === "ar"
                                         ? "text-white"
                                         : "text-[#7A1E3A]"
-                                    }`}
+                                }`}
                             >
                                 العربية
                             </button>

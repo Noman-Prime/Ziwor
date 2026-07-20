@@ -1,87 +1,132 @@
 import { shopifyFetch } from "@/lib/shopify";
 import { SOCIAL_MEDIA_QUERY } from "@/lib/queries";
 
-const getLinkUrl = (value) => {
-    if (!value) {
-        return "";
+const getLanguageCode = (locale) =>
+    locale?.toLowerCase().startsWith("ar")
+        ? "AR"
+        : "EN";
+
+const getImage = (reference) => {
+    if (!reference) {
+        return null;
     }
 
-    try {
-        const parsedLink = JSON.parse(value);
-
-        return parsedLink?.url || "";
-    } catch {
-        return value;
+    if (reference?.image?.url) {
+        return {
+            url: reference.image.url,
+            altText:
+                reference.image.altText || "",
+            width:
+                reference.image.width || null,
+            height:
+                reference.image.height || null,
+        };
     }
+
+    if (reference?.url) {
+        return {
+            url: reference.url,
+            altText: "",
+            width: null,
+            height: null,
+        };
+    }
+
+    return null;
 };
 
-export const getSocialMedia = async (locale = "en") => {
-    try {
-        const language =
-            locale?.toLowerCase().startsWith("ar")
-                ? "AR"
-                : "EN";
+const getBoolean = (value) => {
+    return String(value)
+        .trim()
+        .toLowerCase() === "true";
+};
 
-        const response = await shopifyFetch({
-            query: SOCIAL_MEDIA_QUERY,
-            variables: {
-                language,
-            },
-        });
+export async function getSocialMedia(
+    locale = "en"
+) {
+    const response = await shopifyFetch({
+        query: SOCIAL_MEDIA_QUERY,
+        variables: {
+            language:
+                getLanguageCode(locale),
+        },
+    });
 
-        const data = response?.data || response;
+    console.log(
+        "SOCIAL MEDIA RAW RESPONSE:",
+        JSON.stringify(response, null, 2)
+    );
 
-        const socialMedia =
-            data?.metaobjects?.edges?.map(({ node }) => ({
-                id: node?.id || "",
-                handle: node?.handle || "",
+    const graphqlErrors =
+        response?.errors ||
+        response?.body?.errors ||
+        response?.data?.errors ||
+        [];
 
-                showSocialMedia:
-                    String(
-                        node?.showSocialMedia?.value
-                    ).toLowerCase() === "true",
-
-                name:
-                    node?.name?.value || "",
-
-                image: {
-                    url:
-                        node?.image?.reference?.image?.url ||
-                        node?.image?.reference?.url ||
-                        "",
-
-                    altText:
-                        node?.image?.reference?.image
-                            ?.altText ||
-                        node?.name?.value ||
-                        "",
-
-                    width:
-                        node?.image?.reference?.image
-                            ?.width || null,
-
-                    height:
-                        node?.image?.reference?.image
-                            ?.height || null,
-                },
-
-                link: getLinkUrl(
-                    node?.link?.value
-                ),
-            })) || [];
-
-        return socialMedia.filter(
-            (item) =>
-                item.showSocialMedia &&
-                item.image.url &&
-                item.link
-        );
-    } catch (error) {
+    if (
+        Array.isArray(graphqlErrors) &&
+        graphqlErrors.length > 0
+    ) {
         console.error(
-            "Failed to fetch social media:",
-            error
+            "SOCIAL MEDIA GRAPHQL ERRORS:",
+            JSON.stringify(
+                graphqlErrors,
+                null,
+                2
+            )
         );
 
-        return [];
+        throw new Error(
+            graphqlErrors
+                .map(
+                    (error) =>
+                        error?.message ||
+                        "GraphQL error"
+                )
+                .join(", ")
+        );
     }
-};
+
+    const metaobjects =
+        response?.data?.metaobjects ||
+        response?.metaobjects ||
+        response?.body?.data?.metaobjects ||
+        response?.body?.metaobjects ||
+        null;
+
+    const edges = Array.isArray(
+        metaobjects?.edges
+    )
+        ? metaobjects.edges
+        : [];
+
+    console.log(
+        "SOCIAL MEDIA ENTRIES FOUND:",
+        edges.length
+    );
+
+    return edges.map(
+        ({ node }, index) => ({
+            id:
+                node?.id ||
+                `social-${index}`,
+            handle:
+                node?.handle || "",
+            showSocialMedia:
+                getBoolean(
+                    node?.showSocialMedia
+                        ?.value
+                ),
+            name:
+                node?.name?.value || "",
+            image:
+                getImage(
+                    node?.image
+                        ?.reference
+                ),
+            link:
+                node?.link?.value || "",
+            order: index,
+        })
+    );
+}

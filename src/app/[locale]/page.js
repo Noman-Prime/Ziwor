@@ -1,5 +1,4 @@
 import TopBar from "@/components/topbar";
-import Navbar from "@/components/navbar";
 import Hero from "@/components/hero";
 import Categories from "@/components/categories";
 import Features from "@/components/features";
@@ -7,13 +6,11 @@ import BestSellers from "@/components/bestseller";
 import Footer from "@/components/footer";
 import HomepagePromotions from "@/components/homepage-promotions";
 import WhatsAppBanner from "@/components/whatsappcontact";
+import Navbar from "@/components/navbar";
 
 import { getHeroSliders } from "@/lib/hero-slider";
 import { getHomepagePromotions } from "@/lib/homepage-promotions";
 import { getWhatsAppBanner } from "@/lib/whatsapp-banner";
-import { getBrandLogo } from "@/lib/brand-logo";
-import { getSocialMedia } from "@/lib/social-media";
-import { getFooterContact } from "@/lib/footer-contact";
 
 const Home = async ({ params }) => {
   const { locale } = await params;
@@ -22,23 +19,17 @@ const Home = async ({ params }) => {
     sliders,
     promotions,
     whatsappBanner,
-    brand,
-    socialMedia,
-    footerContact,
   ] = await Promise.all([
     getHeroSliders(locale),
     getHomepagePromotions(locale),
     getWhatsAppBanner(locale),
-    getBrandLogo(locale),
-    getSocialMedia(locale),
-    getFooterContact(locale),
   ]);
 
   return (
     <main className="min-h-screen">
       <TopBar />
 
-      <Navbar brand={brand} />
+      <Navbar />
 
       <HomepagePromotions
         promotions={promotions}
@@ -83,11 +74,7 @@ const Home = async ({ params }) => {
         locale={locale}
       />
 
-      <Footer
-        brand={brand}
-        socialMedia={socialMedia}
-        footerContact={footerContact}
-      />
+      <Footer />
     </main>
   );
 };

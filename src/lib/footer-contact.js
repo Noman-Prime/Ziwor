@@ -1,47 +1,90 @@
 import { shopifyFetch } from "@/lib/shopify";
 import { FOOTER_CONTACT_QUERY } from "@/lib/queries";
 
-export const getFooterContact = async (
+const getLanguageCode = (locale) =>
+    locale?.toLowerCase().startsWith("ar")
+        ? "AR"
+        : "EN";
+
+const getFieldValue = (field) => {
+    if (!field?.value) {
+        return "";
+    }
+
+    return String(field.value).trim();
+};
+
+export async function getFooterContact(
     locale = "en"
-) => {
-    try {
-        const language =
-            locale?.toLowerCase().startsWith("ar")
-                ? "AR"
-                : "EN";
+) {
+    const response = await shopifyFetch({
+        query: FOOTER_CONTACT_QUERY,
+        variables: {
+            language:
+                getLanguageCode(locale),
+        },
+    });
 
-        const response = await shopifyFetch({
-            query: FOOTER_CONTACT_QUERY,
-            variables: {
-                language,
-            },
-        });
+    const graphqlErrors =
+        response?.errors ||
+        response?.body?.errors ||
+        response?.data?.errors ||
+        [];
 
-        const data = response?.data || response;
-
-        const node =
-            data?.metaobjects?.edges?.[0]?.node;
-
-        if (!node) {
-            return null;
-        }
-
-        return {
-            id: node?.id || "",
-            handle: node?.handle || "",
-            email: node?.email?.value || "",
-            whatsappNumber:
-                node?.whatsappNumber?.value || "",
-            whatsappMessage:
-                node?.whatsappMessage?.value || "",
-            address: node?.address?.value || "",
-        };
-    } catch (error) {
+    if (
+        Array.isArray(graphqlErrors) &&
+        graphqlErrors.length > 0
+    ) {
         console.error(
-            "Failed to fetch footer contact:",
-            error
+            "Footer Contact GraphQL Errors:",
+            JSON.stringify(
+                graphqlErrors,
+                null,
+                2
+            )
         );
 
+        throw new Error(
+            graphqlErrors
+                .map(
+                    (error) =>
+                        error?.message ||
+                        "GraphQL error"
+                )
+                .join(", ")
+        );
+    }
+
+    const metaobjects =
+        response?.data?.metaobjects ||
+        response?.metaobjects ||
+        response?.body?.data
+            ?.metaobjects ||
+        response?.body?.metaobjects ||
+        null;
+
+    const entry =
+        metaobjects?.edges?.[0]?.node ||
+        null;
+
+    if (!entry) {
         return null;
     }
-};
+
+    return {
+        id: entry.id || "",
+        handle: entry.handle || "",
+        email:
+            getFieldValue(entry.email),
+        whatsappNumber:
+            getFieldValue(
+                entry.whatsappNumber
+            ),
+        whatsappMessage:
+            getFieldValue(
+                entry.whatsappMessage
+            ),
+        address:
+            getFieldValue(entry.address),
+    };
+}
