@@ -1,7 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
+import {
+    useCallback,
+    useEffect,
+    useMemo,
+    useState,
+} from "react";
 import { useParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -36,15 +41,53 @@ const ProductDetailsPage = () => {
 
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [buyNowLoading, setBuyNowLoading] = useState(false);
+    const [buyNowLoading, setBuyNowLoading] =
+        useState(false);
     const [error, setError] = useState("");
     const [quantity, setQuantity] = useState(1);
     const [message, setMessage] = useState("");
     const [cartError, setCartError] = useState("");
+    const [selectedOptions, setSelectedOptions] =
+        useState({});
 
     const productIdentifier = Array.isArray(params.id)
         ? params.id[0]
         : params.id;
+
+    const initializeSelectedOptions = useCallback(
+        (currentProduct) => {
+            const variants = Array.isArray(
+                currentProduct?.variants
+            )
+                ? currentProduct.variants
+                : [];
+
+            const defaultVariant =
+                variants.find(
+                    (variant) =>
+                        variant.availableForSale
+                ) ||
+                variants[0] ||
+                null;
+
+            if (!defaultVariant) {
+                setSelectedOptions({});
+                return;
+            }
+
+            const initialOptions = {};
+
+            defaultVariant.selectedOptions?.forEach(
+                (option) => {
+                    initialOptions[option.name] =
+                        option.value;
+                }
+            );
+
+            setSelectedOptions(initialOptions);
+        },
+        []
+    );
 
     const getProduct = useCallback(async () => {
         if (!productIdentifier) {
@@ -60,24 +103,32 @@ const ProductDetailsPage = () => {
             setQuantity(1);
             setMessage("");
             setCartError("");
+            setSelectedOptions({});
 
             const response = await fetch(
-                `/api/products?locale=${encodeURIComponent(locale)}`,
+                `/api/products?locale=${encodeURIComponent(
+                    locale
+                )}`,
                 {
                     method: "GET",
                     cache: "no-store",
                 }
             );
 
-            const data = await response.json().catch(() => null);
+            const data = await response
+                .json()
+                .catch(() => null);
 
             if (!response.ok || !data?.success) {
                 throw new Error(
-                    data?.message || t("errors.fetch")
+                    data?.message ||
+                    t("errors.fetch")
                 );
             }
 
-            const products = Array.isArray(data.products)
+            const products = Array.isArray(
+                data.products
+            )
                 ? data.products
                 : [];
 
@@ -89,7 +140,14 @@ const ProductDetailsPage = () => {
                     String(productIdentifier)
             );
 
-            setProduct(currentProduct || null);
+            if (currentProduct) {
+                setProduct(currentProduct);
+                initializeSelectedOptions(
+                    currentProduct
+                );
+            } else {
+                setProduct(null);
+            }
         } catch (error) {
             setProduct(null);
 
@@ -101,7 +159,12 @@ const ProductDetailsPage = () => {
         } finally {
             setLoading(false);
         }
-    }, [locale, productIdentifier, t]);
+    }, [
+        initializeSelectedOptions,
+        locale,
+        productIdentifier,
+        t,
+    ]);
 
     useEffect(() => {
         getProduct();
@@ -115,9 +178,82 @@ const ProductDetailsPage = () => {
         };
     }, []);
 
-    const formatPrice = (value, currencyCode) => {
+    const selectedVariant = useMemo(() => {
+        const variants = Array.isArray(
+            product?.variants
+        )
+            ? product.variants
+            : [];
+
+        if (!variants.length) {
+            return null;
+        }
+
+        return (
+            variants.find((variant) => {
+                const variantOptions =
+                    variant.selectedOptions || [];
+
+                return variantOptions.every(
+                    (option) =>
+                        selectedOptions[
+                        option.name
+                        ] === option.value
+                );
+            }) || null
+        );
+    }, [product, selectedOptions]);
+
+    const displayedVariant =
+        selectedVariant ||
+        product?.variants?.find(
+            (variant) =>
+                variant.id === product.variantId
+        ) ||
+        product?.variants?.[0] ||
+        null;
+
+    const displayedPrice =
+        displayedVariant?.price ?? product?.price;
+
+    const displayedOldPrice =
+        displayedVariant?.oldPrice ??
+        product?.oldPrice;
+
+    const displayedCurrencyCode =
+        displayedVariant?.currencyCode ||
+        product?.currencyCode ||
+        "QAR";
+
+    const displayedImage =
+        displayedVariant?.image?.url
+            ? displayedVariant.image
+            : product?.image;
+
+    const hasOldPrice =
+        Number.isFinite(
+            Number(displayedOldPrice)
+        ) &&
+        Number(displayedOldPrice) >
+        Number(displayedPrice);
+
+    const productAvailable =
+        Boolean(selectedVariant) &&
+        Boolean(
+            selectedVariant.availableForSale
+        ) &&
+        Boolean(selectedVariant.id);
+
+    const actionLoading =
+        cartActionLoading || buyNowLoading;
+
+    const formatPrice = (
+        value,
+        currencyCode
+    ) => {
         const amount = Number(value);
-        const currency = currencyCode || "QAR";
+        const currency =
+            currencyCode || "QAR";
 
         if (!Number.isFinite(amount)) {
             return "";
@@ -131,8 +267,66 @@ const ProductDetailsPage = () => {
                 maximumFractionDigits: 2,
             }).format(amount);
         } catch {
-            return `${currency} ${amount.toFixed(2)}`;
+            return `${currency} ${amount.toFixed(
+                2
+            )}`;
         }
+    };
+
+    const isOptionValueAvailable = (
+        optionName,
+        optionValue
+    ) => {
+        const variants = Array.isArray(
+            product?.variants
+        )
+            ? product.variants
+            : [];
+
+        const nextSelection = {
+            ...selectedOptions,
+            [optionName]: optionValue,
+        };
+
+        return variants.some((variant) => {
+            if (!variant.availableForSale) {
+                return false;
+            }
+
+            return (
+                variant.selectedOptions || []
+            ).every((option) => {
+                const selectedValue =
+                    nextSelection[option.name];
+
+                if (!selectedValue) {
+                    return true;
+                }
+
+                return (
+                    selectedValue === option.value
+                );
+            });
+        });
+    };
+
+    const handleOptionChange = (
+        optionName,
+        optionValue
+    ) => {
+        if (actionLoading) {
+            return;
+        }
+
+        setMessage("");
+        setCartError("");
+
+        setSelectedOptions((current) => ({
+            ...current,
+            [optionName]: optionValue,
+        }));
+
+        setQuantity(1);
     };
 
     const decreaseQuantity = () => {
@@ -149,17 +343,13 @@ const ProductDetailsPage = () => {
 
     const handleAddToCart = async () => {
         if (
-            !product?.availableForSale ||
-            !product?.variantId ||
-            cartActionLoading ||
-            buyNowLoading
+            !productAvailable ||
+            !selectedVariant?.id ||
+            actionLoading
         ) {
-            if (!product?.variantId) {
-                setCartError(
-                    t("errors.variantUnavailable")
-                );
-            }
-
+            setCartError(
+                t("errors.variantUnavailable")
+            );
             return;
         }
 
@@ -168,11 +358,13 @@ const ProductDetailsPage = () => {
             setCartError("");
 
             await addToCart(
-                product.variantId,
+                selectedVariant.id,
                 Number(quantity)
             );
 
-            setMessage(t("messages.addedToCart"));
+            setMessage(
+                t("messages.addedToCart")
+            );
 
             window.clearTimeout(
                 ProductDetailsPage.messageTimeout
@@ -193,17 +385,13 @@ const ProductDetailsPage = () => {
 
     const handleBuyNow = async () => {
         if (
-            !product?.availableForSale ||
-            !product?.variantId ||
-            buyNowLoading ||
-            cartActionLoading
+            !productAvailable ||
+            !selectedVariant?.id ||
+            actionLoading
         ) {
-            if (!product?.variantId) {
-                setCartError(
-                    t("errors.variantUnavailable")
-                );
-            }
-
+            setCartError(
+                t("errors.variantUnavailable")
+            );
             return;
         }
 
@@ -213,7 +401,7 @@ const ProductDetailsPage = () => {
             setCartError("");
 
             await buyNow(
-                product.variantId,
+                selectedVariant.id,
                 Number(quantity)
             );
         } catch (error) {
@@ -233,14 +421,20 @@ const ProductDetailsPage = () => {
                 <Navbar />
 
                 <main
-                    dir={isArabic ? "rtl" : "ltr"}
+                    dir={
+                        isArabic
+                            ? "rtl"
+                            : "ltr"
+                    }
                     className="min-h-screen bg-[#FCF8F6]"
                 >
                     <div className="mx-auto w-full max-w-[1440px] px-4 py-10 sm:px-6 md:px-8 lg:px-10 lg:py-16 xl:px-12">
                         <div className="mb-7 h-5 w-64 animate-pulse rounded bg-[#E8DDE1]" />
 
                         <section
-                            aria-label={t("loading")}
+                            aria-label={t(
+                                "loading"
+                            )}
                             aria-busy="true"
                             className="overflow-hidden rounded-3xl border border-[#E8DDE1] bg-white shadow-[0_15px_50px_rgba(62,28,43,0.08)]"
                         >
@@ -263,7 +457,9 @@ const ProductDetailsPage = () => {
                                     <div className="mt-8 h-14 w-full animate-pulse rounded-full bg-[#F1E8ED]" />
 
                                     <p className="mt-5 text-center text-sm font-semibold text-[#74666A]">
-                                        {t("loading")}
+                                        {t(
+                                            "loading"
+                                        )}
                                     </p>
                                 </div>
                             </div>
@@ -282,7 +478,11 @@ const ProductDetailsPage = () => {
                 <Navbar />
 
                 <main
-                    dir={isArabic ? "rtl" : "ltr"}
+                    dir={
+                        isArabic
+                            ? "rtl"
+                            : "ltr"
+                    }
                     className="flex min-h-[70vh] items-center justify-center bg-[#FCF8F6] px-4 py-20"
                 >
                     <div
@@ -292,7 +492,9 @@ const ProductDetailsPage = () => {
                         <PackageSearch className="mx-auto h-14 w-14 text-red-300" />
 
                         <h1 className="mt-5 text-2xl font-black text-[#2B1D1D] sm:text-3xl">
-                            {t("error.title")}
+                            {t(
+                                "error.title"
+                            )}
                         </h1>
 
                         <p className="mt-3 text-sm leading-7 text-red-500">
@@ -304,7 +506,9 @@ const ProductDetailsPage = () => {
                             onClick={getProduct}
                             className="mt-7 inline-flex items-center justify-center rounded-full bg-[#731D46] px-7 py-3 text-sm font-bold text-white transition duration-300 hover:bg-[#D4A037] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#731D46] focus-visible:ring-offset-2"
                         >
-                            {t("error.retry")}
+                            {t(
+                                "error.retry"
+                            )}
                         </button>
                     </div>
                 </main>
@@ -320,18 +524,26 @@ const ProductDetailsPage = () => {
                 <Navbar />
 
                 <main
-                    dir={isArabic ? "rtl" : "ltr"}
+                    dir={
+                        isArabic
+                            ? "rtl"
+                            : "ltr"
+                    }
                     className="flex min-h-[70vh] items-center justify-center bg-[#FCF8F6] px-4 py-20"
                 >
                     <div className="w-full max-w-xl rounded-3xl border border-[#E8DDE1] bg-white p-8 text-center shadow-[0_15px_50px_rgba(62,28,43,0.08)] sm:p-12">
                         <ShoppingBag className="mx-auto h-14 w-14 text-[#CDB7C1]" />
 
                         <h1 className="mt-5 text-2xl font-black text-[#2B1D1D] sm:text-3xl">
-                            {t("notFound.title")}
+                            {t(
+                                "notFound.title"
+                            )}
                         </h1>
 
                         <p className="mt-3 leading-7 text-[#74666A]">
-                            {t("notFound.description")}
+                            {t(
+                                "notFound.description"
+                            )}
                         </p>
 
                         <Link
@@ -345,7 +557,9 @@ const ProductDetailsPage = () => {
                             )}
 
                             <span>
-                                {t("notFound.backToProducts")}
+                                {t(
+                                    "notFound.backToProducts"
+                                )}
                             </span>
                         </Link>
                     </div>
@@ -356,36 +570,32 @@ const ProductDetailsPage = () => {
         );
     }
 
-    const hasOldPrice =
-        Number.isFinite(Number(product.oldPrice)) &&
-        Number(product.oldPrice) >
-        Number(product.price);
-
-    const productAvailable =
-        Boolean(product.availableForSale) &&
-        Boolean(product.variantId);
-
-    const actionLoading =
-        cartActionLoading || buyNowLoading;
-
     return (
         <>
             <Navbar />
 
             <main
-                dir={isArabic ? "rtl" : "ltr"}
+                dir={
+                    isArabic
+                        ? "rtl"
+                        : "ltr"
+                }
                 className="min-h-screen bg-[#FCF8F6]"
             >
                 <div className="mx-auto w-full max-w-[1440px] px-4 py-6 sm:px-6 md:px-8 lg:px-10 lg:py-10 xl:px-12">
                     <nav
-                        aria-label={t("breadcrumb.label")}
+                        aria-label={t(
+                            "breadcrumb.label"
+                        )}
                         className="mb-6 flex flex-wrap items-center gap-2 text-sm text-[#74666A]"
                     >
                         <Link
                             href="/"
                             className="transition duration-300 hover:text-[#731D46]"
                         >
-                            {t("breadcrumb.home")}
+                            {t(
+                                "breadcrumb.home"
+                            )}
                         </Link>
 
                         <ChevronRight
@@ -400,7 +610,9 @@ const ProductDetailsPage = () => {
                             href="/products"
                             className="transition duration-300 hover:text-[#731D46]"
                         >
-                            {t("breadcrumb.products")}
+                            {t(
+                                "breadcrumb.products"
+                            )}
                         </Link>
 
                         <ChevronRight
@@ -423,14 +635,13 @@ const ProductDetailsPage = () => {
                         <div className="grid lg:grid-cols-2">
                             <div className="border-b border-[#E8DDE1] p-4 sm:p-6 lg:border-b-0 lg:border-e lg:p-8">
                                 <div className="relative aspect-square overflow-hidden rounded-2xl bg-[#F1E8ED]">
-                                    {product.image?.url ? (
+                                    {displayedImage?.url ? (
                                         <Image
                                             src={
-                                                product.image.url
+                                                displayedImage.url
                                             }
                                             alt={
-                                                product.image
-                                                    .altText ||
+                                                displayedImage.altText ||
                                                 product.title
                                             }
                                             fill
@@ -444,12 +655,13 @@ const ProductDetailsPage = () => {
                                         </div>
                                     )}
 
-                                    {product.badge ===
-                                        "sale" && (
-                                            <span className="absolute start-4 top-4 z-10 rounded-full bg-[#D4A037] px-4 py-2 text-xs font-extrabold uppercase tracking-wide text-white shadow-md">
-                                                {t("product.sale")}
-                                            </span>
-                                        )}
+                                    {hasOldPrice && (
+                                        <span className="absolute start-4 top-4 z-10 rounded-full bg-[#D4A037] px-4 py-2 text-xs font-extrabold uppercase tracking-wide text-white shadow-md">
+                                            {t(
+                                                "product.sale"
+                                            )}
+                                        </span>
+                                    )}
                                 </div>
                             </div>
 
@@ -468,16 +680,16 @@ const ProductDetailsPage = () => {
                                 <div className="mt-7 flex flex-wrap items-end gap-3">
                                     <span className="text-3xl font-black text-[#731D46]">
                                         {formatPrice(
-                                            product.price,
-                                            product.currencyCode
+                                            displayedPrice,
+                                            displayedCurrencyCode
                                         )}
                                     </span>
 
                                     {hasOldPrice && (
                                         <span className="pb-1 text-lg text-[#B8A4AC] line-through">
                                             {formatPrice(
-                                                product.oldPrice,
-                                                product.currencyCode
+                                                displayedOldPrice,
+                                                displayedCurrencyCode
                                             )}
                                         </span>
                                     )}
@@ -513,9 +725,100 @@ const ProductDetailsPage = () => {
                                         )}
                                 </p>
 
+                                {Array.isArray(
+                                    product.options
+                                ) &&
+                                    product.options.map(
+                                        (option) => (
+                                            <div
+                                                key={
+                                                    option.name
+                                                }
+                                                className="mt-7"
+                                            >
+                                                <div className="flex items-center justify-between gap-4">
+                                                    <h2 className="font-bold text-[#2B1D1D]">
+                                                        {
+                                                            option.name
+                                                        }
+                                                    </h2>
+
+                                                    {selectedOptions[
+                                                        option
+                                                            .name
+                                                    ] && (
+                                                            <span className="text-sm font-semibold text-[#731D46]">
+                                                                {
+                                                                    selectedOptions[
+                                                                    option
+                                                                        .name
+                                                                    ]
+                                                                }
+                                                            </span>
+                                                        )}
+                                                </div>
+
+                                                <div className="mt-3 flex flex-wrap gap-3">
+                                                    {option.values.map(
+                                                        (
+                                                            value
+                                                        ) => {
+                                                            const isSelected =
+                                                                selectedOptions[
+                                                                option
+                                                                    .name
+                                                                ] ===
+                                                                value;
+
+                                                            const isAvailable =
+                                                                isOptionValueAvailable(
+                                                                    option.name,
+                                                                    value
+                                                                );
+
+                                                            return (
+                                                                <button
+                                                                    key={
+                                                                        value
+                                                                    }
+                                                                    type="button"
+                                                                    onClick={() =>
+                                                                        handleOptionChange(
+                                                                            option.name,
+                                                                            value
+                                                                        )
+                                                                    }
+                                                                    disabled={
+                                                                        !isAvailable ||
+                                                                        actionLoading
+                                                                    }
+                                                                    aria-pressed={
+                                                                        isSelected
+                                                                    }
+                                                                    className={`min-w-20 rounded-full border px-5 py-2.5 text-sm font-bold transition duration-300 ${isSelected
+                                                                            ? "border-[#731D46] bg-[#731D46] text-white"
+                                                                            : isAvailable
+                                                                                ? "border-[#D9C8CF] bg-white text-[#2B1D1D] hover:border-[#731D46] hover:text-[#731D46]"
+                                                                                : "cursor-not-allowed border-[#E8DDE1] bg-[#F7F3F5] text-[#B8A4AC] line-through"
+                                                                        }`}
+                                                                >
+                                                                    {
+                                                                        value
+                                                                    }
+                                                                </button>
+                                                            );
+                                                        }
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )
+                                    )}
+
                                 <div className="mt-8">
                                     <h2 className="font-bold text-[#2B1D1D]">
-                                        {t("product.quantity")}
+                                        {t(
+                                            "product.quantity"
+                                        )}
                                     </h2>
 
                                     <div className="mt-3 flex h-12 w-fit items-center overflow-hidden rounded-full border border-[#D9C8CF] bg-white">
@@ -525,7 +828,8 @@ const ProductDetailsPage = () => {
                                                 decreaseQuantity
                                             }
                                             disabled={
-                                                quantity === 1 ||
+                                                quantity ===
+                                                1 ||
                                                 actionLoading
                                             }
                                             aria-label={t(
@@ -550,7 +854,8 @@ const ProductDetailsPage = () => {
                                             }
                                             disabled={
                                                 !productAvailable ||
-                                                quantity === 99 ||
+                                                quantity ===
+                                                99 ||
                                                 actionLoading
                                             }
                                             aria-label={t(
@@ -638,7 +943,9 @@ const ProductDetailsPage = () => {
                                             <Check className="h-4 w-4 shrink-0" />
 
                                             <span>
-                                                {message}
+                                                {
+                                                    message
+                                                }
                                             </span>
                                         </div>
                                     )}
@@ -648,7 +955,9 @@ const ProductDetailsPage = () => {
                                             role="alert"
                                             className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm font-bold text-red-600"
                                         >
-                                            {cartError}
+                                            {
+                                                cartError
+                                            }
                                         </div>
                                     )}
                                 </div>
@@ -714,7 +1023,9 @@ const ProductDetailsPage = () => {
 
                     <section className="mt-8 rounded-3xl border border-[#E8DDE1] bg-white p-6 shadow-[0_15px_50px_rgba(62,28,43,0.06)] sm:p-8">
                         <h2 className="text-2xl font-black text-[#2B1D1D]">
-                            {t("details.title")}
+                            {t(
+                                "details.title"
+                            )}
                         </h2>
 
                         <p className="mt-4 max-w-4xl whitespace-pre-line leading-8 text-[#74666A]">

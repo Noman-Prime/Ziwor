@@ -13,10 +13,19 @@ const PRODUCTS_QUERY = `
                     url
                     altText
                 }
-                variants(first: 1) {
+                variants(first: 100) {
                     nodes {
                         id
+                        title
                         availableForSale
+                        selectedOptions {
+                            name
+                            value
+                        }
+                        image {
+                            url
+                            altText
+                        }
                         price {
                             amount
                             currencyCode
@@ -39,25 +48,53 @@ const getShopifyDomain = () => {
         .replace(/\/$/, "");
 };
 
+const createProductOptions = (variants) => {
+    const optionMap = new Map();
+
+    variants.forEach((variant) => {
+        variant.selectedOptions.forEach((option) => {
+            if (!optionMap.has(option.name)) {
+                optionMap.set(option.name, new Set());
+            }
+
+            optionMap.get(option.name).add(option.value);
+        });
+    });
+
+    return Array.from(optionMap.entries()).map(
+        ([name, values]) => ({
+            name,
+            values: Array.from(values),
+        })
+    );
+};
+
 export const GET = async (request) => {
     try {
         const { searchParams } = new URL(request.url);
         const locale = searchParams.get("locale") || "en";
-        const language = locale.toLowerCase().startsWith("ar")
+
+        const language = locale
+            .toLowerCase()
+            .startsWith("ar")
             ? "AR"
             : "EN";
 
         const storeDomain = getShopifyDomain();
+
         const storefrontAccessToken =
             process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
+
         const storefrontApiVersion =
-            process.env.SHOPIFY_STOREFRONT_API_VERSION || "2026-04";
+            process.env.SHOPIFY_STOREFRONT_API_VERSION ||
+            "2026-04";
 
         if (!storeDomain || !storefrontAccessToken) {
             return Response.json(
                 {
                     success: false,
-                    message: "Shopify environment variables are missing",
+                    message:
+                        "Shopify environment variables are missing",
                 },
                 {
                     status: 500,
@@ -115,34 +152,105 @@ export const GET = async (request) => {
         }
 
         const products =
-            data?.data?.products?.nodes?.map((product) => {
-                const variant = product.variants?.nodes?.[0] || null;
-                const price = Number(variant?.price?.amount || 0);
-                const oldPrice = variant?.compareAtPrice?.amount
-                    ? Number(variant.compareAtPrice.amount)
-                    : null;
+            data?.data?.products?.nodes?.map(
+                (product) => {
+                    const variants =
+                        product.variants?.nodes?.map(
+                            (variant) => {
+                                const price = Number(
+                                    variant.price?.amount || 0
+                                );
 
-                return {
-                    id: product.id,
-                    variantId: variant?.id || null,
-                    handle: product.handle,
-                    title: product.title,
-                    description: product.description || "",
-                    category: product.productType || "Product",
-                    availableForSale:
-                        Boolean(product.availableForSale) &&
-                        Boolean(variant?.availableForSale),
-                    image: product.featuredImage,
-                    price,
-                    oldPrice,
-                    currencyCode:
-                        variant?.price?.currencyCode || "QAR",
-                    badge:
-                        oldPrice && oldPrice > price
-                            ? "sale"
-                            : null,
-                };
-            }) || [];
+                                const oldPrice =
+                                    variant.compareAtPrice
+                                        ?.amount
+                                        ? Number(
+                                            variant
+                                                .compareAtPrice
+                                                .amount
+                                        )
+                                        : null;
+
+                                return {
+                                    id: variant.id,
+                                    title: variant.title,
+                                    availableForSale:
+                                        Boolean(
+                                            variant.availableForSale
+                                        ),
+                                    selectedOptions:
+                                        variant.selectedOptions ||
+                                        [],
+                                    image:
+                                        variant.image ||
+                                        product.featuredImage,
+                                    price,
+                                    oldPrice,
+                                    currencyCode:
+                                        variant.price
+                                            ?.currencyCode ||
+                                        "QAR",
+                                };
+                            }
+                        ) || [];
+
+                    const firstAvailableVariant =
+                        variants.find(
+                            (variant) =>
+                                variant.availableForSale
+                        );
+
+                    const defaultVariant =
+                        firstAvailableVariant ||
+                        variants[0] ||
+                        null;
+
+                    const price =
+                        defaultVariant?.price || 0;
+
+                    const oldPrice =
+                        defaultVariant?.oldPrice || null;
+
+                    return {
+                        id: product.id,
+                        handle: product.handle,
+                        title: product.title,
+                        description:
+                            product.description || "",
+                        category:
+                            product.productType ||
+                            "Product",
+                        availableForSale:
+                            Boolean(
+                                product.availableForSale
+                            ) &&
+                            variants.some(
+                                (variant) =>
+                                    variant.availableForSale
+                            ),
+                        image:
+                            defaultVariant?.image ||
+                            product.featuredImage,
+                        variantId:
+                            defaultVariant?.id || null,
+                        price,
+                        oldPrice,
+                        currencyCode:
+                            defaultVariant?.currencyCode ||
+                            "QAR",
+                        badge:
+                            oldPrice &&
+                            oldPrice > price
+                                ? "sale"
+                                : null,
+                        options:
+                            createProductOptions(
+                                variants
+                            ),
+                        variants,
+                    };
+                }
+            ) || [];
 
         return Response.json(
             {
@@ -158,7 +266,9 @@ export const GET = async (request) => {
             {
                 success: false,
                 message:
-                    error.message || "Something went wrong",
+                    error instanceof Error
+                        ? error.message
+                        : "Something went wrong",
             },
             {
                 status: 500,

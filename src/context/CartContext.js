@@ -20,45 +20,123 @@ const normalizeCart = (cart) => {
 
     return {
         ...cart,
-        lines: cart.lines?.edges?.map((item) => item.node) || [],
+        lines:
+            cart.lines?.edges?.map(
+                (item) => item.node
+            ) || [],
     };
+};
+
+const readJsonResponse = async (response) => {
+    const data = await response
+        .json()
+        .catch(() => null);
+
+    if (!data) {
+        throw new Error(
+            `Invalid server response (${response.status})`
+        );
+    }
+
+    return data;
+};
+
+const getCheckoutRedirectUrl = async (
+    checkoutUrl
+) => {
+    if (!checkoutUrl) {
+        throw new Error(
+            "Shopify checkout URL is unavailable"
+        );
+    }
+
+    const response = await fetch(
+        "/api/cart/checkout",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                checkoutUrl,
+            }),
+            cache: "no-store",
+        }
+    );
+
+    const data = await readJsonResponse(response);
+
+    if (
+        !response.ok ||
+        !data.success ||
+        !data.checkoutUrl
+    ) {
+        throw new Error(
+            data.message ||
+            "Unable to prepare checkout"
+        );
+    }
+
+    return data.checkoutUrl;
 };
 
 export const CartProvider = ({ children }) => {
     const [cart, setCart] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [cartActionLoading, setCartActionLoading] = useState(false);
+    const [
+        cartActionLoading,
+        setCartActionLoading,
+    ] = useState(false);
     const [error, setError] = useState("");
 
     const saveCart = useCallback((nextCart) => {
-        const normalizedCart = normalizeCart(nextCart);
+        const normalizedCart =
+            normalizeCart(nextCart);
 
         setCart(normalizedCart);
 
         if (normalizedCart?.id) {
-            localStorage.setItem(CART_STORAGE_KEY, normalizedCart.id);
+            localStorage.setItem(
+                CART_STORAGE_KEY,
+                normalizedCart.id
+            );
         }
 
         return normalizedCart;
     }, []);
 
     const clearCart = useCallback(() => {
-        localStorage.removeItem(CART_STORAGE_KEY);
+        localStorage.removeItem(
+            CART_STORAGE_KEY
+        );
         setCart(null);
     }, []);
 
     const createCart = useCallback(async () => {
-        const response = await fetch("/api/cart/create", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
+        const response = await fetch(
+            "/api/cart/create",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type":
+                        "application/json",
+                },
+                cache: "no-store",
+            }
+        );
 
-        const data = await response.json();
+        const data =
+            await readJsonResponse(response);
 
-        if (!response.ok || !data.success || !data.cart) {
-            throw new Error(data.message || "Unable to create cart");
+        if (
+            !response.ok ||
+            !data.success ||
+            !data.cart?.id
+        ) {
+            throw new Error(
+                data.message ||
+                "Unable to create cart"
+            );
         }
 
         return saveCart(data.cart);
@@ -66,20 +144,33 @@ export const CartProvider = ({ children }) => {
 
     const getCart = useCallback(
         async (cartId) => {
-            const response = await fetch("/api/cart/get", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    cartId,
-                }),
-            });
+            const response = await fetch(
+                "/api/cart/get",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type":
+                            "application/json",
+                    },
+                    body: JSON.stringify({
+                        cartId,
+                    }),
+                    cache: "no-store",
+                }
+            );
 
-            const data = await response.json();
+            const data =
+                await readJsonResponse(response);
 
-            if (!response.ok || !data.success || !data.cart) {
-                throw new Error(data.message || "Unable to load cart");
+            if (
+                !response.ok ||
+                !data.success ||
+                !data.cart
+            ) {
+                throw new Error(
+                    data.message ||
+                    "Unable to load cart"
+                );
             }
 
             return saveCart(data.cart);
@@ -92,55 +183,93 @@ export const CartProvider = ({ children }) => {
             return cart;
         }
 
-        const storedCartId = localStorage.getItem(CART_STORAGE_KEY);
+        const storedCartId =
+            localStorage.getItem(
+                CART_STORAGE_KEY
+            );
 
         if (storedCartId) {
             try {
-                return await getCart(storedCartId);
+                return await getCart(
+                    storedCartId
+                );
             } catch {
                 clearCart();
             }
         }
 
         return await createCart();
-    }, [cart, clearCart, createCart, getCart]);
+    }, [
+        cart,
+        clearCart,
+        createCart,
+        getCart,
+    ]);
 
     const addToCart = useCallback(
         async (variantId, quantity = 1) => {
             if (!variantId) {
-                throw new Error("Variant ID is required");
+                throw new Error(
+                    "Variant ID is required"
+                );
             }
+
+            const validQuantity = Math.max(
+                1,
+                Number(quantity) || 1
+            );
 
             try {
                 setCartActionLoading(true);
                 setError("");
 
-                const currentCart = await ensureCart();
+                const currentCart =
+                    await ensureCart();
 
-                const response = await fetch("/api/cart/add", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        cartId: currentCart.id,
-                        variantId,
-                        quantity,
-                    }),
-                });
+                const response = await fetch(
+                    "/api/cart/add",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type":
+                                "application/json",
+                        },
+                        body: JSON.stringify({
+                            cartId:
+                                currentCart.id,
+                            variantId,
+                            quantity:
+                                validQuantity,
+                        }),
+                        cache: "no-store",
+                    }
+                );
 
-                const data = await response.json();
+                const data =
+                    await readJsonResponse(
+                        response
+                    );
 
-                if (!response.ok || !data.success || !data.cart) {
+                if (
+                    !response.ok ||
+                    !data.success ||
+                    !data.cart
+                ) {
                     throw new Error(
-                        data.message || "Unable to add item to cart"
+                        data.message ||
+                        "Unable to add item to cart"
                     );
                 }
 
                 return saveCart(data.cart);
             } catch (error) {
-                setError(error.message);
-                throw error;
+                const message =
+                    error instanceof Error
+                        ? error.message
+                        : "Unable to add item to cart";
+
+                setError(message);
+                throw new Error(message);
             } finally {
                 setCartActionLoading(false);
             }
@@ -148,110 +277,119 @@ export const CartProvider = ({ children }) => {
         [ensureCart, saveCart]
     );
 
-    const buyNow = useCallback(async (variantId, quantity = 1) => {
-        if (!variantId) {
-            throw new Error("Variant ID is required");
-        }
-
-        try {
-            setCartActionLoading(true);
-            setError("");
-
-            const createResponse = await fetch("/api/cart/create", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-
-            const createData = await createResponse.json();
-
-            if (
-                !createResponse.ok ||
-                !createData.success ||
-                !createData.cart?.id
-            ) {
+    const buyNow = useCallback(
+        async (variantId, quantity = 1) => {
+            if (!variantId) {
                 throw new Error(
-                    createData.message || "Unable to create checkout cart"
+                    "Variant ID is required"
                 );
             }
 
-            const addResponse = await fetch("/api/cart/add", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    cartId: createData.cart.id,
-                    variantId,
-                    quantity,
-                }),
-            });
-
-            const addData = await addResponse.json();
-
-            if (
-                !addResponse.ok ||
-                !addData.success ||
-                !addData.cart?.checkoutUrl
-            ) {
-                throw new Error(
-                    addData.message || "Unable to start checkout"
-                );
-            }
-
-            window.location.href = addData.cart.checkoutUrl;
-        } catch (error) {
-            setError(error.message);
-            throw error;
-        } finally {
-            setCartActionLoading(false);
-        }
-    }, []);
-
-    const updateCartLine = useCallback(
-        async (lineId, quantity) => {
-            if (!cart?.id || !lineId) {
-                return;
-            }
-
-            if (quantity <= 0) {
-                return await removeCartLine(lineId);
-            }
+            const validQuantity = Math.max(
+                1,
+                Number(quantity) || 1
+            );
 
             try {
                 setCartActionLoading(true);
                 setError("");
 
-                const response = await fetch("/api/cart/update", {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        cartId: cart.id,
-                        lineId,
-                        quantity,
-                    }),
-                });
+                const createResponse =
+                    await fetch(
+                        "/api/cart/create",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type":
+                                    "application/json",
+                            },
+                            cache: "no-store",
+                        }
+                    );
 
-                const data = await response.json();
+                const createData =
+                    await readJsonResponse(
+                        createResponse
+                    );
 
-                if (!response.ok || !data.success || !data.cart) {
+                if (
+                    !createResponse.ok ||
+                    !createData.success ||
+                    !createData.cart?.id
+                ) {
                     throw new Error(
-                        data.message || "Unable to update cart item"
+                        createData.message ||
+                        "Unable to create checkout cart"
                     );
                 }
 
-                return saveCart(data.cart);
+                const addResponse =
+                    await fetch(
+                        "/api/cart/add",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type":
+                                    "application/json",
+                            },
+                            body: JSON.stringify({
+                                cartId:
+                                    createData
+                                        .cart.id,
+                                variantId,
+                                quantity:
+                                    validQuantity,
+                            }),
+                            cache: "no-store",
+                        }
+                    );
+
+                const addData =
+                    await readJsonResponse(
+                        addResponse
+                    );
+
+                if (
+                    !addResponse.ok ||
+                    !addData.success ||
+                    !addData.cart
+                ) {
+                    throw new Error(
+                        addData.message ||
+                        "Unable to add product to checkout"
+                    );
+                }
+
+                if (
+                    !addData.cart.checkoutUrl
+                ) {
+                    throw new Error(
+                        "Shopify checkout URL is unavailable"
+                    );
+                }
+
+                const checkoutUrl =
+                    await getCheckoutRedirectUrl(
+                        addData.cart
+                            .checkoutUrl
+                    );
+
+                window.location.assign(
+                    checkoutUrl
+                );
             } catch (error) {
-                setError(error.message);
-                throw error;
+                const message =
+                    error instanceof Error
+                        ? error.message
+                        : "Unable to start checkout";
+
+                setError(message);
+                throw new Error(message);
             } finally {
                 setCartActionLoading(false);
             }
         },
-        [cart, saveCart]
+        []
     );
 
     const removeCartLine = useCallback(
@@ -264,29 +402,47 @@ export const CartProvider = ({ children }) => {
                 setCartActionLoading(true);
                 setError("");
 
-                const response = await fetch("/api/cart/remove", {
-                    method: "DELETE",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        cartId: cart.id,
-                        lineId,
-                    }),
-                });
+                const response = await fetch(
+                    "/api/cart/remove",
+                    {
+                        method: "DELETE",
+                        headers: {
+                            "Content-Type":
+                                "application/json",
+                        },
+                        body: JSON.stringify({
+                            cartId: cart.id,
+                            lineId,
+                        }),
+                        cache: "no-store",
+                    }
+                );
 
-                const data = await response.json();
+                const data =
+                    await readJsonResponse(
+                        response
+                    );
 
-                if (!response.ok || !data.success || !data.cart) {
+                if (
+                    !response.ok ||
+                    !data.success ||
+                    !data.cart
+                ) {
                     throw new Error(
-                        data.message || "Unable to remove cart item"
+                        data.message ||
+                        "Unable to remove cart item"
                     );
                 }
 
                 return saveCart(data.cart);
             } catch (error) {
-                setError(error.message);
-                throw error;
+                const message =
+                    error instanceof Error
+                        ? error.message
+                        : "Unable to remove cart item";
+
+                setError(message);
+                throw new Error(message);
             } finally {
                 setCartActionLoading(false);
             }
@@ -294,26 +450,130 @@ export const CartProvider = ({ children }) => {
         [cart, saveCart]
     );
 
-    const refreshCart = useCallback(async () => {
-        if (!cart?.id) {
+    const updateCartLine = useCallback(
+        async (lineId, quantity) => {
+            if (!cart?.id || !lineId) {
+                return;
+            }
+
+            const validQuantity =
+                Number(quantity) || 0;
+
+            if (validQuantity <= 0) {
+                return await removeCartLine(
+                    lineId
+                );
+            }
+
+            try {
+                setCartActionLoading(true);
+                setError("");
+
+                const response = await fetch(
+                    "/api/cart/update",
+                    {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type":
+                                "application/json",
+                        },
+                        body: JSON.stringify({
+                            cartId: cart.id,
+                            lineId,
+                            quantity:
+                                validQuantity,
+                        }),
+                        cache: "no-store",
+                    }
+                );
+
+                const data =
+                    await readJsonResponse(
+                        response
+                    );
+
+                if (
+                    !response.ok ||
+                    !data.success ||
+                    !data.cart
+                ) {
+                    throw new Error(
+                        data.message ||
+                        "Unable to update cart item"
+                    );
+                }
+
+                return saveCart(data.cart);
+            } catch (error) {
+                const message =
+                    error instanceof Error
+                        ? error.message
+                        : "Unable to update cart item";
+
+                setError(message);
+                throw new Error(message);
+            } finally {
+                setCartActionLoading(false);
+            }
+        },
+        [
+            cart,
+            removeCartLine,
+            saveCart,
+        ]
+    );
+
+    const refreshCart =
+        useCallback(async () => {
+            if (!cart?.id) {
+                return;
+            }
+
+            try {
+                setError("");
+                return await getCart(cart.id);
+            } catch (error) {
+                const message =
+                    error instanceof Error
+                        ? error.message
+                        : "Unable to refresh cart";
+
+                setError(message);
+                clearCart();
+            }
+        }, [cart, clearCart, getCart]);
+
+    const checkout = useCallback(async () => {
+        if (!cart?.checkoutUrl) {
+            setError(
+                "Shopify checkout URL is unavailable"
+            );
             return;
         }
 
         try {
+            setCartActionLoading(true);
             setError("");
-            return await getCart(cart.id);
+
+            const checkoutUrl =
+                await getCheckoutRedirectUrl(
+                    cart.checkoutUrl
+                );
+
+            window.location.assign(
+                checkoutUrl
+            );
         } catch (error) {
-            setError(error.message);
-            clearCart();
-        }
-    }, [cart, clearCart, getCart]);
+            const message =
+                error instanceof Error
+                    ? error.message
+                    : "Unable to open checkout";
 
-    const checkout = useCallback(() => {
-        if (!cart?.checkoutUrl) {
-            return;
+            setError(message);
+            throw new Error(message);
+        } finally {
+            setCartActionLoading(false);
         }
-
-        window.location.href = cart.checkoutUrl;
     }, [cart]);
 
     useEffect(() => {
@@ -323,7 +583,9 @@ export const CartProvider = ({ children }) => {
                 setError("");
 
                 const storedCartId =
-                    localStorage.getItem(CART_STORAGE_KEY);
+                    localStorage.getItem(
+                        CART_STORAGE_KEY
+                    );
 
                 if (!storedCartId) {
                     return;
@@ -332,7 +594,12 @@ export const CartProvider = ({ children }) => {
                 await getCart(storedCartId);
             } catch (error) {
                 clearCart();
-                setError(error.message);
+
+                setError(
+                    error instanceof Error
+                        ? error.message
+                        : "Unable to load cart"
+                );
             } finally {
                 setLoading(false);
             }
@@ -345,10 +612,16 @@ export const CartProvider = ({ children }) => {
         return {
             cart,
             lines: cart?.lines || [],
-            totalQuantity: cart?.totalQuantity || 0,
-            subtotal: cart?.cost?.subtotalAmount || null,
-            total: cart?.cost?.totalAmount || null,
-            checkoutUrl: cart?.checkoutUrl || null,
+            totalQuantity:
+                cart?.totalQuantity || 0,
+            subtotal:
+                cart?.cost
+                    ?.subtotalAmount || null,
+            total:
+                cart?.cost?.totalAmount ||
+                null,
+            checkoutUrl:
+                cart?.checkoutUrl || null,
             loading,
             cartActionLoading,
             error,
@@ -375,17 +648,22 @@ export const CartProvider = ({ children }) => {
     ]);
 
     return (
-        <CartContext.Provider value={value}>
+        <CartContext.Provider
+            value={value}
+        >
             {children}
         </CartContext.Provider>
     );
 };
 
 export const useCart = () => {
-    const context = useContext(CartContext);
+    const context =
+        useContext(CartContext);
 
     if (!context) {
-        throw new Error("useCart must be used inside CartProvider");
+        throw new Error(
+            "useCart must be used inside CartProvider"
+        );
     }
 
     return context;

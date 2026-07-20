@@ -11,15 +11,49 @@ export const POST = async () => {
             },
         });
 
+        const result = data?.cartCreate;
+        const userErrors = result?.userErrors || [];
+
+        if (userErrors.length > 0) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message:
+                        userErrors[0]?.message ||
+                        "Unable to create cart",
+                },
+                {
+                    status: 400,
+                }
+            );
+        }
+
+        if (!result?.cart?.id) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message:
+                        "Shopify did not return a valid cart",
+                },
+                {
+                    status: 500,
+                }
+            );
+        }
+
         return NextResponse.json({
             success: true,
-            cart: data.cartCreate.cart,
+            cart: result.cart,
+            warnings: result.warnings || [],
         });
     } catch (error) {
         return NextResponse.json(
             {
                 success: false,
-                message: error.message,
+                message:
+                    error instanceof Error
+                        ? error.message
+                        : "Unable to create cart",
             },
             {
                 status: 500,

@@ -4,7 +4,6 @@ import Hero from "@/components/hero";
 import Categories from "@/components/categories";
 import Features from "@/components/features";
 import BestSellers from "@/components/bestseller";
-import WhatsAppBanner from "@/components/whatsappcontact";
 import Footer from "@/components/footer";
 import { getHeroSliders } from "@/lib/hero-slider";
 
@@ -20,7 +19,6 @@ const Home = async ({ params }) => {
       <Categories />
       <Features />
       <BestSellers />
-      <WhatsAppBanner />
       <Footer />
     </main>
   );
