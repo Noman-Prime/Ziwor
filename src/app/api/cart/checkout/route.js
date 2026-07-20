@@ -1,3 +1,10 @@
+const getShopifyDomain = () => {
+    return process.env.SHOPIFY_STORE_DOMAIN
+        ?.replace("https://", "")
+        .replace("http://", "")
+        .replace(/\/$/, "");
+};
+
 export const POST = async (request) => {
     try {
         const { checkoutUrl } = await request.json();
@@ -14,16 +21,29 @@ export const POST = async (request) => {
             );
         }
 
-        const parsedCheckoutUrl = new URL(checkoutUrl);
+        const shopifyDomain = getShopifyDomain();
 
-        if (
-            parsedCheckoutUrl.protocol !== "https:" &&
-            parsedCheckoutUrl.protocol !== "http:"
-        ) {
+        if (!shopifyDomain) {
             return Response.json(
                 {
                     success: false,
-                    message: "Invalid checkout URL",
+                    message:
+                        "SHOPIFY_STORE_DOMAIN is missing",
+                },
+                {
+                    status: 500,
+                }
+            );
+        }
+
+        const originalUrl = new URL(checkoutUrl);
+
+        if (!originalUrl.pathname.startsWith("/cart/c/")) {
+            return Response.json(
+                {
+                    success: false,
+                    message:
+                        "Invalid Shopify checkout URL",
                 },
                 {
                     status: 400,
@@ -31,10 +51,17 @@ export const POST = async (request) => {
             );
         }
 
+        const safeCheckoutUrl = new URL(
+            originalUrl.pathname +
+                originalUrl.search,
+            `https://${shopifyDomain}`
+        );
+
         return Response.json(
             {
                 success: true,
-                checkoutUrl: parsedCheckoutUrl.toString(),
+                checkoutUrl:
+                    safeCheckoutUrl.toString(),
             },
             {
                 status: 200,

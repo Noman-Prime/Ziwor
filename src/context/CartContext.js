@@ -41,45 +41,6 @@ const readJsonResponse = async (response) => {
     return data;
 };
 
-const getCheckoutRedirectUrl = async (
-    checkoutUrl
-) => {
-    if (!checkoutUrl) {
-        throw new Error(
-            "Shopify checkout URL is unavailable"
-        );
-    }
-
-    const response = await fetch(
-        "/api/cart/checkout",
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                checkoutUrl,
-            }),
-            cache: "no-store",
-        }
-    );
-
-    const data = await readJsonResponse(response);
-
-    if (
-        !response.ok ||
-        !data.success ||
-        !data.checkoutUrl
-    ) {
-        throw new Error(
-            data.message ||
-            "Unable to prepare checkout"
-        );
-    }
-
-    return data.checkoutUrl;
-};
-
 export const CartProvider = ({ children }) => {
     const [cart, setCart] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -109,6 +70,7 @@ export const CartProvider = ({ children }) => {
         localStorage.removeItem(
             CART_STORAGE_KEY
         );
+
         setCart(null);
     }, []);
 
@@ -269,6 +231,7 @@ export const CartProvider = ({ children }) => {
                         : "Unable to add item to cart";
 
                 setError(message);
+
                 throw new Error(message);
             } finally {
                 setCartActionLoading(false);
@@ -368,14 +331,8 @@ export const CartProvider = ({ children }) => {
                     );
                 }
 
-                const checkoutUrl =
-                    await getCheckoutRedirectUrl(
-                        addData.cart
-                            .checkoutUrl
-                    );
-
                 window.location.assign(
-                    checkoutUrl
+                    addData.cart.checkoutUrl
                 );
             } catch (error) {
                 const message =
@@ -384,6 +341,7 @@ export const CartProvider = ({ children }) => {
                         : "Unable to start checkout";
 
                 setError(message);
+
                 throw new Error(message);
             } finally {
                 setCartActionLoading(false);
@@ -442,6 +400,7 @@ export const CartProvider = ({ children }) => {
                         : "Unable to remove cart item";
 
                 setError(message);
+
                 throw new Error(message);
             } finally {
                 setCartActionLoading(false);
@@ -511,6 +470,7 @@ export const CartProvider = ({ children }) => {
                         : "Unable to update cart item";
 
                 setError(message);
+
                 throw new Error(message);
             } finally {
                 setCartActionLoading(false);
@@ -531,6 +491,7 @@ export const CartProvider = ({ children }) => {
 
             try {
                 setError("");
+
                 return await getCart(cart.id);
             } catch (error) {
                 const message =
@@ -543,37 +504,21 @@ export const CartProvider = ({ children }) => {
             }
         }, [cart, clearCart, getCart]);
 
-    const checkout = useCallback(async () => {
+    const checkout = useCallback(() => {
         if (!cart?.checkoutUrl) {
             setError(
                 "Shopify checkout URL is unavailable"
             );
+
             return;
         }
 
-        try {
-            setCartActionLoading(true);
-            setError("");
+        setError("");
+        setCartActionLoading(true);
 
-            const checkoutUrl =
-                await getCheckoutRedirectUrl(
-                    cart.checkoutUrl
-                );
-
-            window.location.assign(
-                checkoutUrl
-            );
-        } catch (error) {
-            const message =
-                error instanceof Error
-                    ? error.message
-                    : "Unable to open checkout";
-
-            setError(message);
-            throw new Error(message);
-        } finally {
-            setCartActionLoading(false);
-        }
+        window.location.assign(
+            cart.checkoutUrl
+        );
     }, [cart]);
 
     useEffect(() => {
