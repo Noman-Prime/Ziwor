@@ -22,55 +22,58 @@ const Home = async ({ params }) => {
     ]);
 
     return (
+        // <main className="min-h-screen">
+        //     <TopBar />
+
+        //     <Navbar />
+
+        //     <HomepagePromotions
+        //         promotions={promotions}
+        //         location="after_navbar"
+        //         locale={locale}
+        //     />
+
+        //     <Hero slides={sliders ?? []} />
+
+        //     <HomepagePromotions
+        //         promotions={promotions}
+        //         location="after_hero"
+        //         locale={locale}
+        //     />
+
+        //     <Categories />
+
+        //     <HomepagePromotions
+        //         promotions={promotions}
+        //         location="after_categories"
+        //         locale={locale}
+        //     />
+
+        //     <Features />
+
+        //     <HomepagePromotions
+        //         promotions={promotions}
+        //         location="after_features"
+        //         locale={locale}
+        //     />
+
+        //     <BestSellers />
+
+        //     <HomepagePromotions
+        //         promotions={promotions}
+        //         location="after_bestsellers"
+        //         locale={locale}
+        //     />
+
+        //     <WhatsAppBanner
+        //         banner={whatsappBanner}
+        //         locale={locale}
+        //     />
+
+        //     <Footer />
+        // </main>
         <main className="min-h-screen">
-            <TopBar />
-
-            <Navbar />
-
-            <HomepagePromotions
-                promotions={promotions}
-                location="after_navbar"
-                locale={locale}
-            />
-
-            <Hero slides={sliders ?? []} />
-
-            <HomepagePromotions
-                promotions={promotions}
-                location="after_hero"
-                locale={locale}
-            />
-
-            <Categories />
-
-            <HomepagePromotions
-                promotions={promotions}
-                location="after_categories"
-                locale={locale}
-            />
-
-            <Features />
-
-            <HomepagePromotions
-                promotions={promotions}
-                location="after_features"
-                locale={locale}
-            />
-
-            <BestSellers />
-
-            <HomepagePromotions
-                promotions={promotions}
-                location="after_bestsellers"
-                locale={locale}
-            />
-
-            <WhatsAppBanner
-                banner={whatsappBanner}
-                locale={locale}
-            />
-
-            <Footer />
+            This Website is Completely Developed And wait For final Approvel
         </main>
     );
 };
