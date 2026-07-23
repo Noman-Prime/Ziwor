@@ -9,27 +9,46 @@ const PRODUCTS_QUERY = `
                 description
                 productType
                 availableForSale
+
                 featuredImage {
                     url
                     altText
+                    width
+                    height
                 }
+
+                images(first: 20) {
+                    nodes {
+                        url
+                        altText
+                        width
+                        height
+                    }
+                }
+
                 variants(first: 100) {
                     nodes {
                         id
                         title
                         availableForSale
+
                         selectedOptions {
                             name
                             value
                         }
+
                         image {
                             url
                             altText
+                            width
+                            height
                         }
+
                         price {
                             amount
                             currencyCode
                         }
+
                         compareAtPrice {
                             amount
                             currencyCode
@@ -54,25 +73,64 @@ const createProductOptions = (variants) => {
     variants.forEach((variant) => {
         variant.selectedOptions.forEach((option) => {
             if (!optionMap.has(option.name)) {
-                optionMap.set(option.name, new Set());
+                optionMap.set(
+                    option.name,
+                    new Set()
+                );
             }
 
-            optionMap.get(option.name).add(option.value);
+            optionMap
+                .get(option.name)
+                .add(option.value);
         });
     });
 
-    return Array.from(optionMap.entries()).map(
-        ([name, values]) => ({
-            name,
-            values: Array.from(values),
-        })
+    return Array.from(
+        optionMap.entries()
+    ).map(([name, values]) => ({
+        name,
+        values: Array.from(values),
+    }));
+};
+
+const normalizeProductImages = (
+    product,
+    variants
+) => {
+    const productImages = Array.isArray(
+        product?.images?.nodes
+    )
+        ? product.images.nodes
+        : [];
+
+    const variantImages = variants
+        .map((variant) => variant.image)
+        .filter((image) => image?.url);
+
+    const allImages = [
+        product.featuredImage,
+        ...productImages,
+        ...variantImages,
+    ].filter((image) => image?.url);
+
+    return allImages.filter(
+        (image, index, currentImages) =>
+            currentImages.findIndex(
+                (currentImage) =>
+                    currentImage.url ===
+                    image.url
+            ) === index
     );
 };
 
 export const GET = async (request) => {
     try {
-        const { searchParams } = new URL(request.url);
-        const locale = searchParams.get("locale") || "en";
+        const { searchParams } = new URL(
+            request.url
+        );
+
+        const locale =
+            searchParams.get("locale") || "en";
 
         const language = locale
             .toLowerCase()
@@ -80,16 +138,23 @@ export const GET = async (request) => {
             ? "AR"
             : "EN";
 
-        const storeDomain = getShopifyDomain();
+        const storeDomain =
+            getShopifyDomain();
 
         const storefrontAccessToken =
-            process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
+            process.env
+                .SHOPIFY_STOREFRONT_ACCESS_TOKEN;
 
         const storefrontApiVersion =
-            process.env.SHOPIFY_STOREFRONT_API_VERSION ||
+            process.env
+                .SHOPIFY_STOREFRONT_API_VERSION ||
+            process.env.SHOPIFY_API_VERSION ||
             "2026-04";
 
-        if (!storeDomain || !storefrontAccessToken) {
+        if (
+            !storeDomain ||
+            !storefrontAccessToken
+        ) {
             return Response.json(
                 {
                     success: false,
@@ -107,7 +172,8 @@ export const GET = async (request) => {
             {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type":
+                        "application/json",
                     "Shopify-Storefront-Private-Token":
                         storefrontAccessToken,
                 },
@@ -121,13 +187,15 @@ export const GET = async (request) => {
             }
         );
 
-        const data = await response.json();
+        const data =
+            await response.json();
 
         if (!response.ok) {
             return Response.json(
                 {
                     success: false,
-                    message: "Shopify request failed",
+                    message:
+                        "Shopify request failed",
                     error: data,
                 },
                 {
@@ -136,12 +204,13 @@ export const GET = async (request) => {
             );
         }
 
-        if (data.errors) {
+        if (data.errors?.length) {
             return Response.json(
                 {
                     success: false,
                     message:
-                        data.errors[0]?.message ||
+                        data.errors[0]
+                            ?.message ||
                         "Unable to fetch Shopify products",
                     errors: data.errors,
                 },
@@ -157,12 +226,17 @@ export const GET = async (request) => {
                     const variants =
                         product.variants?.nodes?.map(
                             (variant) => {
-                                const price = Number(
-                                    variant.price?.amount || 0
-                                );
+                                const price =
+                                    Number(
+                                        variant
+                                            .price
+                                            ?.amount ||
+                                        0
+                                    );
 
                                 const oldPrice =
-                                    variant.compareAtPrice
+                                    variant
+                                        .compareAtPrice
                                         ?.amount
                                         ? Number(
                                             variant
@@ -173,7 +247,8 @@ export const GET = async (request) => {
 
                                 return {
                                     id: variant.id,
-                                    title: variant.title,
+                                    title:
+                                        variant.title,
                                     availableForSale:
                                         Boolean(
                                             variant.availableForSale
@@ -183,11 +258,13 @@ export const GET = async (request) => {
                                         [],
                                     image:
                                         variant.image ||
-                                        product.featuredImage,
+                                        product.featuredImage ||
+                                        null,
                                     price,
                                     oldPrice,
                                     currencyCode:
-                                        variant.price
+                                        variant
+                                            .price
                                             ?.currencyCode ||
                                         "QAR",
                                 };
@@ -206,17 +283,27 @@ export const GET = async (request) => {
                         null;
 
                     const price =
-                        defaultVariant?.price || 0;
+                        defaultVariant?.price ||
+                        0;
 
                     const oldPrice =
-                        defaultVariant?.oldPrice || null;
+                        defaultVariant?.oldPrice ||
+                        null;
+
+                    const images =
+                        normalizeProductImages(
+                            product,
+                            variants
+                        );
 
                     return {
                         id: product.id,
-                        handle: product.handle,
+                        handle:
+                            product.handle,
                         title: product.title,
                         description:
-                            product.description || "",
+                            product.description ||
+                            "",
                         category:
                             product.productType ||
                             "Product",
@@ -228,25 +315,37 @@ export const GET = async (request) => {
                                 (variant) =>
                                     variant.availableForSale
                             ),
+
                         image:
+                            images[0] ||
                             defaultVariant?.image ||
-                            product.featuredImage,
+                            product.featuredImage ||
+                            null,
+
+                        images,
+
                         variantId:
-                            defaultVariant?.id || null,
+                            defaultVariant?.id ||
+                            null,
+
                         price,
                         oldPrice,
+
                         currencyCode:
                             defaultVariant?.currencyCode ||
                             "QAR",
+
                         badge:
                             oldPrice &&
-                            oldPrice > price
+                                oldPrice > price
                                 ? "sale"
                                 : null,
+
                         options:
                             createProductOptions(
                                 variants
                             ),
+
                         variants,
                     };
                 }

@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { CartProvider } from "@/context/CartContext";
 import { CustomerProvider } from "@/context/CustomerContext";
+import MetaPixel from "@/components/metapixel";
 import "../globals.css";
 
 const geistSans = Geist({
@@ -62,10 +63,12 @@ export default async function RootLayout({ children, params }) {
         >
             <body
                 className={`min-h-screen bg-white text-[#24191E] ${isArabic
-                    ? "font-[family-name:var(--font-arabic)]"
-                    : "font-[family-name:var(--font-geist-sans)]"
+                        ? "font-[family-name:var(--font-arabic)]"
+                        : "font-[family-name:var(--font-geist-sans)]"
                     }`}
             >
+                <MetaPixel />
+
                 <NextIntlClientProvider
                     locale={locale}
                     messages={messages}

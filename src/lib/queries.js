@@ -10,7 +10,6 @@ export const GET_SHOP = `
         }
     }
 `;
-
 export const GET_COLLECTIONS = `
     query GetCollections($language: LanguageCode!)
     @inContext(language: $language) {
@@ -30,7 +29,6 @@ export const GET_COLLECTIONS = `
         }
     }
 `;
-
 export const GET_COLLECTION_BY_HANDLE = `
     query GetCollectionByHandle($handle: String!) {
         collection(handle: $handle) {
@@ -358,7 +356,6 @@ export const HOMEPAGE_PROMOTIONS_QUERY = `
     }
   }
 `;
-
 export const WHATSAPP_BANNER_QUERY = `
   query WhatsAppBanner($language: LanguageCode!)
   @inContext(language: $language) {
@@ -396,7 +393,6 @@ export const WHATSAPP_BANNER_QUERY = `
     }
   }
 `;
-
 export const BRAND_LOGO_QUERY = `
     query BrandLogo($language: LanguageCode!)
     @inContext(language: $language) {
@@ -433,7 +429,6 @@ export const BRAND_LOGO_QUERY = `
         }
     }
 `;
-
 export const SOCIAL_MEDIA_QUERY = `
     query SocialMedia($language: LanguageCode!)
     @inContext(language: $language) {
@@ -476,7 +471,6 @@ export const SOCIAL_MEDIA_QUERY = `
         }
     }
 `;
-
 export const FOOTER_CONTACT_QUERY = `
     query FooterContact($language: LanguageCode!)
     @inContext(language: $language) {
@@ -499,6 +493,31 @@ export const FOOTER_CONTACT_QUERY = `
                     }
 
                     address: field(key: "address") {
+                        value
+                    }
+                }
+            }
+        }
+    }
+`;
+export const META_PIXEL_SETTINGS_QUERY = `
+    query MetaPixelSettings($language: LanguageCode!)
+    @inContext(language: $language) {
+        metaobjects(type: "meta_pixel_settings", first: 1) {
+            edges {
+                node {
+                    id
+                    handle
+
+                    enabled: field(key: "enabled") {
+                        value
+                    }
+
+                    pixelId: field(key: "pixel_id") {
+                        value
+                    }
+
+                    testEventCode: field(key: "test_event_code") {
                         value
                     }
                 }

@@ -1,3 +1,5 @@
+import { META_PIXEL_SETTINGS_QUERY } from "./queries";
+
 const domain = process.env.SHOPIFY_STORE_DOMAIN;
 const token = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
 const apiVersion = process.env.SHOPIFY_API_VERSION;
@@ -54,4 +56,56 @@ export const shopifyFetch = async ({
     }
 
     return result.data;
+};
+
+export const getMetaPixelSettings = async (
+    locale = "en"
+) => {
+    const language =
+        locale?.toLowerCase().startsWith("ar")
+            ? "AR"
+            : "EN";
+
+    try {
+        const data = await shopifyFetch({
+            query: META_PIXEL_SETTINGS_QUERY,
+            variables: {
+                language,
+            },
+            cache: "no-store",
+        });
+
+        const node =
+            data?.metaobjects?.edges?.[0]?.node;
+
+        if (!node) {
+            return null;
+        }
+
+        const enabled =
+            node.enabled?.value === "true";
+
+        const pixelId =
+            node.pixelId?.value?.trim() || "";
+
+        const testEventCode =
+            node.testEventCode?.value?.trim() || "";
+
+        if (!enabled || !pixelId) {
+            return null;
+        }
+
+        return {
+            enabled,
+            pixelId,
+            testEventCode,
+        };
+    } catch (error) {
+        console.error(
+            "Failed to fetch Meta Pixel settings:",
+            error
+        );
+
+        return null;
+    }
 };
